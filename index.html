@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>新葡萄农贸市场 · 采购指南</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  :root {
+    --green: #2D8B4E;
+    --green-light: #E8F5EC;
+    --green-dark: #1B6B38;
+    --orange: #E8793A;
+    --orange-light: #FFF3EB;
+    --bg: #F5F5F0;
+    --card: #FFFFFF;
+    --text: #1A1A1A;
+    --text-secondary: #6B7280;
+    --text-muted: #9CA3AF;
+    --border: #E5E5E0;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .status-bar {
+    height: 44px;
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+  }
+  .status-bar span {
+    color: rgba(255,255,255,0.9);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .main-header {
+    background: var(--green);
+    padding: 0 20px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .main-header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -40px;
+    width: 160px; height: 160px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .main-header::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: -20px;
+    width: 100px; height: 100px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .market-name {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 1px;
+  }
+  .market-name small {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    opacity: 0.75;
+    margin-top: 2px;
+    letter-spacing: 0;
+  }
+  .header-badge {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .header-badge i { font-size: 10px; color: var(--orange); }
+
+  .search-box {
+    position: relative;
+    z-index: 1;
+  }
+  .search-box input {
+    width: 100%;
+    height: 44px;
+    border: none;
+    border-radius: 22px;
+    padding: 0 16px 0 42px;
+    font-size: 14px;
+    font-family: inherit;
+    background: rgba(255,255,255,0.95);
+    color: var(--text);
+    outline: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .search-box input::placeholder { color: var(--text-muted); }
+  .search-box i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  .search-box .clear-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: var(--border);
+    color: var(--text-secondary);
+    font-size: 10px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .search-box .clear-btn.show { display: flex; }
+
+  .search-results {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    background: #fff;
+    z-index: 50;
+    min-height: 100vh;
+    display: none;
+  }
+  .search-results.active { display: block; }
+  .search-results-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .search-results-header button {
+    background: none; border: none;
+    font-size: 18px; color: var(--text);
+    cursor: pointer; padding: 4px;
+  }
+  .search-results-header span {
+    font-size: 15px; font-weight: 500;
+  }
+  .search-results-list { padding: 12px 20px; }
+  .search-result-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item .sr-name {
+    font-size: 15px; font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .search-result-item .sr-name mark {
+    background: #FDE68A; color: var(--text);
+    padding: 0 2px; border-radius: 2px;
+  }
+  .search-result-item .sr-meta {
+    font-size: 12px; color: var(--text-secondary);
+    display: flex; gap: 12px;
+  }
+
+  .content { padding: 0 16px 100px; margin-top: -8px; }
+
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .quick-action {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 14px 8px;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: var(--shadow);
+  }
+  .quick-action:active { transform: scale(0.95); }
+  .quick-action .qa-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    font-size: 18px;
+  }
+  .quick-action .qa-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px 0 12px;
+  }
+  .section-title h2 {
+    font-size: 17px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-title h2::before {
+    content: '';
+    width: 4px; height: 18px;
+    background: var(--green);
+    border-radius: 2px;
+  }
+  .section-title a {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .zone-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin-bottom: 16px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .zone-tabs::-webkit-scrollbar { display: none; }
+  .zone-tab {
+    flex-shrink: 0;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .zone-tab.active {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+    box-shadow: 0 3px 12px rgba(45,139,78,0.3);
+  }
+
+  .shop-list { display: flex; flex-direction: column; gap: 12px; }
+  .shop-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.15s;
+    border: 1.5px solid transparent;
+  }
+  .shop-card:active { transform: scale(0.98); }
+  .shop-card.featured { border-color: var(--orange); }
+  .shop-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .shop-card-left { flex: 1; }
+  .shop-name {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .shop-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+  .badge-feature {
+    background: var(--orange-light);
+    color: var(--orange);
+  }
+  .badge-new {
+    background: var(--green-light);
+    color: var(--green);
+  }
+  .shop-stall {
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .shop-card-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--orange);
+  }
+  .shop-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .shop-tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text-secondary);
+  }
+  .price-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .price-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .price-table th:last-child { text-align: right; }
+  .price-table td {
+    font-size: 13px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .price-table tr:last-child td { border-bottom: none; }
+  .price-table td:last-child {
+    text-align: right;
+    font-weight: 700;
+    color: var(--orange);
+  }
+  .price-table .price-unit {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+
+  .tips-card {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .tips-card::before {
+    content: '';
+    position: absolute;
+    top: -20px; right: -20px;
+    width: 80px; height: 80px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .tips-card h3 {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tips-list { list-style: none; }
+  .tips-list li {
+    color: rgba(255,255,255,0.88);
+    font-size: 13px;
+    line-height: 1.8;
+    padding-left: 16px;
+    position: relative;
+  }
+  .tips-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 6px; height: 6px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 50%;
+  }
+
+  .map-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-top: 12px;
+  }
+  .map-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .map-zone {
+    border-radius: 10px;
+    padding: 14px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.15s;
+    border: none;
+    font-family: inherit;
+  }
+  .map-zone:active { transform: scale(0.96); }
+  .map-zone .mz-icon { font-size: 22px; margin-bottom: 4px; }
+  .map-zone .mz-name { font-size: 13px; font-weight: 700; }
+  .map-zone .mz-count { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-content {
+    background: #fff;
+    width: 100%;
+    max-width: 480px;
+    max-height: 80vh;
+    border-radius: 20px 20px 0 0;
+    padding: 0;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 12px auto;
+  }
+  .modal-body { padding: 0 20px 32px; }
+  .modal-shop-name {
+    font-size: 20px; font-weight: 900;
+    margin-bottom: 4px;
+  }
+  .modal-shop-stall {
+    font-size: 13px; color: var(--text-secondary);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .modal-section-title {
+    font-size: 14px; font-weight: 700;
+    margin: 16px 0 10px;
+    color: var(--green-dark);
+  }
+  .modal-feature-list { list-style: none; }
+  .modal-feature-list li {
+    font-size: 13px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .modal-feature-list li:last-child { border-bottom: none; }
+  .modal-feature-list li i {
+    color: var(--green);
+    font-size: 12px;
+    width: 20px; text-align: center;
+  }
+  .modal-price-full { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .modal-price-full th {
+    text-align: left; font-size: 12px; color: var(--text-muted);
+    padding: 8px 4px; border-bottom: 2px solid var(--border);
+    font-weight: 500;
+  }
+  .modal-price-full th:last-child { text-align: right; }
+  .modal-price-full td {
+    font-size: 13px; padding: 10px 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-price-full td:last-child {
+    text-align: right; font-weight: 700; color: var(--orange);
+  }
+  .modal-price-full tr:last-child td { border-bottom: none; }
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    background: #fff;
+    border-top: 1px solid var(--border);
+    display: flex;
+    z-index: 80;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .nav-item {
+    flex: 1;
+    padding: 10px 0 8px;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+    transition: color 0.2s;
+  }
+  .nav-item i {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 3px;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+  .nav-item span {
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+  .nav-item.active i { color: var(--green); }
+  .nav-item.active span { color: var(--green); font-weight: 700; }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .notice-bar {
+    background: var(--orange-light);
+    margin: 0 16px;
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .notice-bar i { color: var(--orange); font-size: 14px; flex-shrink: 0; }
+  .notice-text {
+    font-size: 12px;
+    color: var(--orange);
+    white-space: nowrap;
+    animation: scrollLeft 15s linear infinite;
+  }
+  @keyframes scrollLeft {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .consult-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 12px;
+  }
+  .consult-card h3 {
+    font-size: 15px; font-weight: 700;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .consult-card h3 i { color: var(--green); }
+  .consult-item {
+    display: flex; align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+  .consult-item:last-child { border-bottom: none; }
+  .consult-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .consult-info { flex: 1; }
+  .consult-info .ci-label { font-size: 14px; font-weight: 500; }
+  .consult-info .ci-desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .consult-arrow { color: var(--text-muted); font-size: 12px; }
+
+  .toast {
+    position: fixed;
+    top: 60px; left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 13px;
+    z-index: 200;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .fade-in {
+    animation: fadeIn 0.4s ease forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .season-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #FEF3C7;
+    color: #D97706;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="search-results" id="searchPanel">
+  <div class="search-results-header">
+    <button onclick="closeSearch()"><i class="fas fa-arrow-left"></i></button>
+    <span id="searchTitle">搜索结果</span>
+  </div>
+  <div class="search-results-list" id="searchResults"></div>
+</div>
+
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<!-- 首页 -->
+<div class="page active" id="pageHome">
+  <div class="status-bar"><span>新葡萄农贸市场 · 智慧导购</span></div>
+  <div class="main-header">
+    <div class="header-top">
+      <div class="market-name">
+        新葡萄农贸市场
+        <small>营业时间 07:30 - 11:30 15:00 - 18:00</small>
+      </div>
+      <div class="header-badge">
+        <i class="fas fa-circle"></i> 营业中
+      </div>
+    </div>
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="搜索菜品、商户、摊位号..." oninput="handleSearch(this.value)">
+      <button class="clear-btn" id="clearBtn" onclick="clearSearch()"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="notice-bar" style="margin-left:0;margin-right:0;">
+      <i class="fas fa-bullhorn"></i>
+      <span class="notice-text">本周产地直供活动，部分菜品限时特价，先到先得！</span>
+    </div>
+
+    <div class="quick-actions">
+      <button class="quick-action" onclick="switchPage('pageMap')">
+        <div class="qa-icon" style="background:#E8F5EC;color:#2D8B4E;"><i class="fas fa-map-signs"></i></div>
+        <div class="qa-label">区域地图</div>
+      </button>
+      <button class="quick-action" onclick="switchPage('pagePrice')">
+        <div class="qa-icon" style="background:#FFF3EB;color:#E8793A;"><i class="fas fa-tags"></i></div>
+        <div class="qa-label">价格查询</div>
+      </button>
+      <button class="quick-action" onclick="switchPage('pageConsult')">
+        <div class="qa-icon" style="background:#EFF6FF;color:#3B82F6;"><i class="fas fa-headset"></i></div>
+        <div class="qa-label">咨询导购</div>
+      </button>
+      <button class="quick-action" onclick="showToast('更多功能开发中')">
+        <div class="qa-icon" style="background:#FDF2F8;color:#EC4899;"><i class="fas fa-heart"></i></div>
+        <div class="qa-label">收藏清单</div>
+      </button>
+    </div>
+
+    <div class="section-title">
+      <h2>按区域逛</h2>
+      <a onclick="switchPage('pageMap')">全览 <i class="fas fa-chevron-right"></i></a>
+    </div>
+    <div class="zone-tabs" id="zoneTabs"></div>
+
+    <div class="shop-list" id="shopList"></div>
+
+    <div class="tips-card">
+      <h3><i class="fas fa-lightbulb"></i> 采购小贴士</h3>
+      <ul class="tips-list">       
+        <li>根茎类挑选：表皮光滑、手感沉实为佳</li>
+        <li>绿叶菜建议当天采购，不宜久存</li>
+        <li>水产选购注意眼球透明、鳃部鲜红</li>
+        <li>遇到价格疑问可到服务台咨询导购员</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 区域地图页 -->
+<div class="page" id="pageMap">
+  <div class="status-bar"><span>区域导览</span></div>
+  <div class="main-header" style="padding-bottom:20px;">
+    <div class="header-top">
+      <div class="market-name">
+        <small style="cursor:pointer" onclick="switchPage('pageHome')"><i class="fas fa-arrow-left"></i> 返回首页</small>
+      </div>
+    </div>
+    <div style="color:rgba(255,255,255,0.9);font-size:15px;font-weight:700;">市场区域导览</div>
+    <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-top:4px;">点击区域查看详情</div>
+  </div>
+  <div class="content">
+    <div class="map-grid" id="mapGrid"></div>
+  </div>
+</div>
+
+<!-- 价格查询页 -->
+<div class="page" id="pagePrice">
+  <div class="status-bar"><span>价格参考</span></div>
+  <div class="main-header" style="padding-bottom:20px;">
+    <div class="header-top">
+      <div class="market-name">
+        <small style="cursor:pointer" onclick="switchPage('pageHome')"><i class="fas fa-arrow-left"></i> 返回首页</small>
+      </div>
+    </div>
+    <div style="color:rgba(255,255,255,0.9);font-size:15px;font-weight:700;">今日参考价格</div>
+    <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-top:4px;">价格每日更新，仅供参考 · 单位：元/斤</div>
+  </div>
+  <div class="content" id="priceContent"></div>
+</div>
+
+<!-- 咨询导购页 -->
+<div class="page" id="pageConsult">
+  <div class="status-bar"><span>导购服务</span></div>
+  <div class="main-header" style="padding-bottom:20px;">
+    <div class="header-top">
+      <div class="market-name">
+        <small style="cursor:pointer" onclick="switchPage('pageHome')"><i class="fas fa-arrow-left"></i> 返回首页</small>
+      </div>
+    </div>
+    <div style="color:rgba(255,255,255,0.9);font-size:15px;font-weight:700;">导购咨询服务</div>
+    <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-top:4px;">服务台位于市场正门入口</div>
+  </div>
+  <div class="content">
+    <div class="consult-card">
+      <h3><i class="fas fa-concierge-bell"></i> 现场服务</h3>
+      <div class="consult-item">
+        <div class="consult-icon" style="background:var(--green-light);color:var(--green);"><i class="fas fa-map-marker-alt"></i></div>
+        <div class="consult-info">
+          <div class="ci-label">服务台位置</div>
+          <div class="ci-desc">市场正门入口</div>
+        </div>
+        <i class="fas fa-chevron-right consult-arrow"></i>
+      </div>
+      <div class="consult-item">
+        <div class="consult-icon" style="background:var(--orange-light);color:var(--orange);"><i class="fas fa-clock"></i></div>
+        <div class="consult-info">
+          <div class="ci-label">服务时间</div>
+          <div class="ci-desc">每日 08:30 - 11:30 15:30 - 17:30</div>
+        </div>
+        <i class="fas fa-chevron-right consult-arrow"></i>
+      </div>
+      <div class="consult-item">
+        <div class="consult-icon" style="background:#EFF6FF;color:#3B82F6;"><i class="fas fa-phone-alt"></i></div>
+        <div class="consult-info">
+          <div class="ci-label">咨询电话</div>
+          <div class="ci-desc">0571-8888-6666</div>
+        </div>
+        <i class="fas fa-chevron-right consult-arrow"></i>
+      </div>
+    </div>
+
+    <div class="consult-card">
+      <h3><i class="fas fa-hands-helping"></i> 可提供帮助</h3>
+      <div class="consult-item" onclick="showToast('请前往服务台咨询')">
+        <div class="consult-icon" style="background:#FDF2F8;color:#EC4899;"><i class="fas fa-search"></i></div>
+        <div class="consult-info">
+          <div class="ci-label">品类指引</div>
+          <div class="ci-desc">帮您快速找到目标摊位</div>
+        </div>
+        <i class="fas fa-chevron-right consult-arrow"></i>
+      </div>
+      <div class="consult-item" onclick="showToast('请前往服务台咨询')">
+        <div class="consult-icon" style="background:#FEF3C7;color:#D97706;"><i class="fas fa-carrot"></i></div>
+        <div class="consult-info">
+          <div class="ci-label">菜品挑选建议</div>
+          <div class="ci-desc">教您辨别新鲜度与品质</div>
+        </div>
+        <i class="fas fa-chevron-right consult-arrow"></i>
+      </div>
+      <div class="consult-item" onclick="showToast('请前往服务台咨询')">
+        <div class="consult-icon" style="background:var(--green-light);color:var(--green);"><i class="fas fa-balance-scale"></i></div>
+        <div class="consult-info">
+          <div class="ci-label">价格咨询</div>
+          <div class="ci-desc">提供当日参考价格信息</div>
+        </div>
+        <i class="fas fa-chevron-right consult-arrow"></i>
+      </div>
+      <div class="consult-item" onclick="showToast('请前往服务台咨询')">
+        <div class="consult-icon" style="background:#F3E8FF;color:#9333EA;"><i class="fas fa-comment-dots"></i></div>
+        <div class="consult-info">
+          <div class="ci-label">投诉与建议</div>
+          <div class="ci-desc">您的反馈我们认真对待</div>
+        </div>
+        <i class="fas fa-chevron-right consult-arrow"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 底部导航 -->
+<div class="bottom-nav">
+  <button class="nav-item active" data-page="pageHome" onclick="navTo(this)">
+    <i class="fas fa-home"></i><span>首页</span>
+  </button>
+  <button class="nav-item" data-page="pageMap" onclick="navTo(this)">
+    <i class="fas fa-th-large"></i><span>区域</span>
+  </button>
+  <button class="nav-item" data-page="pagePrice" onclick="navTo(this)">
+    <i class="fas fa-tags"></i><span>价格</span>
+  </button>
+  <button class="nav-item" data-page="pageConsult" onclick="navTo(this)">
+    <i class="fas fa-headset"></i><span>服务</span>
+  </button>
+</div>
+
+<script>
+// ===== 数据 =====
+const marketData = {
+  zones: [
+    { id: 'veg', name: '蔬菜区', icon: '🥬', color: '#2D8B4E', bgColor: '#E8F5EC', location: 'A区', count: 12 },
+    { id: 'fruit', name: '水果区', icon: '🍎', color: '#DC2626', bgColor: '#FEE2E2', location: 'B区', count: 8 },
+    { id: 'meat', name: '肉禽区', icon: '🥩', color: '#9333EA', bgColor: '#F3E8FF', location: 'C区', count: 6 },
+    { id: 'seafood', name: '水产区', icon: '🐟', color: '#0891B2', bgColor: '#CFFAFE', location: 'D区', count: 5 },
+    { id: 'dry', name: '干货区', icon: '🫘', color: '#D97706', bgColor: '#FEF3C7', location: 'E区', count: 7 },
+    { id: 'deli', name: '熟食区', icon: '🍗', color: '#E8793A', bgColor: '#FFF3EB', location: 'F区', count: 4 }
+  ],
+  shops: [
+    {
+      id: 1, zone: 'veg', name: '老李蔬菜行', stall: 'A-03',
+      featured: true, isNew: false,
+      tags: ['叶菜类', '根茎类', '时令鲜蔬'],
+      desc: '经营15年老店，品种齐全，每日产地直供',
+      prices: [
+        { item: '小青菜', price: '3.5', unit: '元/斤' },
+        { item: '西红柿', price: '4.0-5.0', unit: '元/斤', range: true },
+        { item: '土豆', price: '2.5', unit: '元/斤' },
+        { item: '黄瓜', price: '3.0', unit: '元/斤' },
+        { item: '茼蒿', price: '5.0', unit: '元/斤', season: true }
+      ]
+    },
+    {
+      id: 2, zone: 'veg', name: '绿野菜铺', stall: 'A-07',
+      featured: false, isNew: true,
+      tags: ['有机蔬菜', '沙拉菜', '进口菜'],
+      desc: '主打有机和进口蔬菜，品质上乘',
+      prices: [
+        { item: '有机生菜', price: '8.0', unit: '元/斤' },
+        { item: '羽衣甘蓝', price: '12.0', unit: '元/斤' },
+        { item: '芝麻菜', price: '10.0', unit: '元/斤' },
+        { item: '罗马生菜', price: '7.0', unit: '元/斤' }
+      ]
+    },
+    {
+      id: 3, zone: 'veg', name: '张记菜摊', stall: 'A-11',
+      featured: false, isNew: false,
+      tags: ['家常菜', '豆制品', '菌菇'],
+      desc: '家常蔬菜和豆制品，经济实惠',
+      prices: [
+        { item: '大白菜', price: '1.5', unit: '元/斤' },
+        { item: '老豆腐', price: '3.0', unit: '元/块' },
+        { item: '金针菇', price: '4.0', unit: '元/袋' },
+        { item: '香菇', price: '8.0', unit: '元/斤' }
+      ]
+    },
+    {
+      id: 4, zone: 'fruit', name: '鲜果坊', stall: 'B-02',
+      featured: true, isNew: false,
+      tags: ['时令水果', '进口水果', '果切'],
+      desc: '品种最全的水果行，支持果切定制',
+      prices: [
+        { item: '红富士苹果', price: '5.0-7.0', unit: '元/斤', range: true },
+        { item: '云南香蕉', price: '3.5', unit: '元/斤' },
+        { item: '丹东草莓', price: '25.0', unit: '元/斤', season: true },
+        { item: '车厘子', price: '45.0-65.0', unit: '元/斤', range: true }
+      ]
+    },
+    {
+      id: 5, zone: 'fruit', name: '果真鲜', stall: 'B-05',
+      featured: false, isNew: false,
+      tags: ['国产水果', '礼盒装', '批发'],
+      desc: '十斤起享批发价，礼盒定制',
+      prices: [
+        { item: '赣南脐橙', price: '4.5', unit: '元/斤' },
+        { item: '砂糖橘', price: '5.0', unit: '元/斤', season: true },
+        { item: '麒麟西瓜', price: '3.0', unit: '元/斤' }
+      ]
+    },
+    {
+      id: 6, zone: 'meat', name: '金锣冷鲜', stall: 'C-01',
+      featured: true, isNew: false,
+      tags: ['猪肉', '牛肉', '品质保障'],
+      desc: '冷链直供，检验检疫齐全',
+      prices: [
+        { item: '五花肉', price: '18.0', unit: '元/斤' },
+        { item: '里脊肉', price: '22.0', unit: '元/斤' },
+        { item: '牛腱子', price: '42.0', unit: '元/斤' },
+        { item: '排骨', price: '28.0', unit: '元/斤' }
+      ]
+    },
+    {
+      id: 7, zone: 'meat', name: '禽旺家禽', stall: 'C-04',
+      featured: false, isNew: false,
+      tags: ['土鸡', '老鸭', '鲜活禽'],
+      desc: '现杀现卖，活禽可挑选',
+      prices: [
+        { item: '土鸡', price: '28.0', unit: '元/斤' },
+        { item: '老鸭', price: '25.0', unit: '元/斤' },
+        { item: '鸽子', price: '35.0', unit: '元/只' }
+      ]
+    },
+    {
+      id: 8, zone: 'seafood', name: '海之鲜', stall: 'D-02',
+      featured: true, isNew: false,
+      tags: ['活海鲜', '贝类', '虾蟹'],
+      desc: '日进两批，活鲜保证',
+      prices: [
+        { item: '基围虾', price: '38.0', unit: '元/斤' },
+        { item: '大闸蟹', price: '55.0-88.0', unit: '元/斤', range: true, season: true },
+        { item: '花甲', price: '12.0', unit: '元/斤' },
+        { item: '鲈鱼', price: '18.0', unit: '元/斤' }
+      ]
+    },
+    {
+      id: 9, zone: 'seafood', name: '渔人码头', stall: 'D-05',
+      featured: false, isNew: true,
+      tags: ['淡水鱼', '鱼丸', '加工'],
+      desc: '支持杀鱼去鳞，鱼丸现做',
+      prices: [
+        { item: '草鱼', price: '10.0', unit: '元/斤' },
+        { item: '鲫鱼', price: '12.0', unit: '元/斤' },
+        { item: '手工鱼丸', price: '22.0', unit: '元/斤' }
+      ]
+    },
+    {
+      id: 10, zone: 'dry', name: '百味干货', stall: 'E-01',
+      featured: true, isNew: false,
+      tags: ['调料', '干菌', '杂粮'],
+      desc: '一站购齐调味料和干货',
+      prices: [
+        { item: '八角', price: '35.0', unit: '元/斤' },
+        { item: '黑木耳', price: '40.0', unit: '元/斤' },
+        { item: '黄花菜', price: '25.0', unit: '元/斤' },
+        { item: '绿豆', price: '6.0', unit: '元/斤' }
+      ]
+    },
+    {
+      id: 11, zone: 'dry', name: '福源坚果', stall: 'E-04',
+      featured: false, isNew: false,
+      tags: ['坚果', '果干', '零食'],
+      desc: '坚果果干品种丰富，可试吃',
+      prices: [
+        { item: '核桃', price: '20.0', unit: '元/斤' },
+        { item: '葡萄干', price: '15.0', unit: '元/斤' },
+        { item: '腰果', price: '38.0', unit: '元/斤' }
+      ]
+    },
+    {
+      id: 12, zone: 'deli', name: '卤大厨', stall: 'F-01',
+      featured: true, isNew: false,
+      tags: ['卤味', '凉菜', '现卤现卖'],
+      desc: '祖传卤方，每日现卤',
+      prices: [
+        { item: '卤牛肉', price: '58.0', unit: '元/斤' },
+        { item: '卤鸭脖', price: '28.0', unit: '元/斤' },
+        { item: '凉拌海带', price: '12.0', unit: '元/斤' },
+        { item: '卤鸡蛋', price: '2.0', unit: '元/个' }
+      ]
+    },
+    {
+      id: 13, zone: 'deli', name: '香酥记', stall: 'F-03',
+      featured: false, isNew: false,
+      tags: ['炸鸡', '烤鸭', '熟食'],
+      desc: '现烤现炸，外酥里嫩',
+      prices: [
+        { item: '烤鸭', price: '32.0', unit: '元/只' },
+        { item: '炸鸡腿', price: '6.0', unit: '元/个' },
+        { item: '盐水鸭', price: '38.0', unit: '元/斤' }
+      ]
+    }
+  ]
+};
+
+let currentZone = 'veg';
+
+function init() {
+  renderZoneTabs();
+  renderShopList();
+  renderMapGrid();
+  renderPricePage();
+}
+
+function renderZoneTabs() {
+  const container = document.getElementById('zoneTabs');
+  container.innerHTML = marketData.zones.map(z => `
+    <button class="zone-tab ${z.id === currentZone ? 'active' : ''}" 
+            onclick="selectZone('${z.id}')">${z.icon} ${z.name}</button>
+  `).join('');
+}
+
+function selectZone(zoneId) {
+  currentZone = zoneId;
+  renderZoneTabs();
+  renderShopList();
+}
+
+function renderShopList() {
+  const container = document.getElementById('shopList');
+  const shops = marketData.shops.filter(s => s.zone === currentZone);
+
+  container.innerHTML = shops.map((shop, idx) => `
+    <div class="shop-card ${shop.featured ? 'featured' : ''} fade-in" 
+         style="animation-delay: ${idx * 0.08}s"
+         onclick="openShopDetail(${shop.id})">
+      <div class="shop-card-header">
+        <div class="shop-card-left">
+          <div class="shop-name">
+            ${shop.name}
+            ${shop.featured ? '<span class="shop-badge badge-feature">特色</span>' : ''}
+            ${shop.isNew ? '<span class="shop-badge badge-new">新入驻</span>' : ''}
+          </div>
+          <div class="shop-stall">
+            <i class="fas fa-map-pin"></i> ${shop.stall}
+          </div>
+        </div>
+        <div class="shop-card-right">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+      <div class="shop-tags">
+        ${shop.tags.map(t => `<span class="shop-tag">${t}</span>`).join('')}
+      </div>
+      <table class="price-table">
+        <thead><tr><th>品名</th><th>参考价</th></tr></thead>
+        <tbody>
+          ${shop.prices.slice(0, 3).map(p => `
+            <tr>
+              <td>${p.item} ${p.season ? '<span class="season-tag"><i class="fas fa-leaf"></i>时令</span>' : ''}</td>
+              <td>${p.price} <span class="price-unit">${p.unit}</span></td>
+            </tr>
+          `).join('')}
+          ${shop.prices.length > 3 ? `<tr><td colspan="2" style="text-align:center;color:var(--text-muted);font-size:12px;">共 ${shop.prices.length} 个品种，点击查看全部</td></tr>` : ''}
+        </tbody>
+      </table>
+    </div>
+  `).join('');
+}
+
+function openShopDetail(shopId) {
+  const shop = marketData.shops.find(s => s.id === shopId);
+  if (!shop) return;
+  const zone = marketData.zones.find(z => z.id === shop.zone);
+
+  const html = `
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-shop-name">
+        ${shop.name}
+        ${shop.featured ? '<span class="shop-badge badge-feature">特色商户</span>' : ''}
+      </div>
+      <div class="modal-shop-stall">
+        <i class="fas fa-map-pin" style="color:var(--green)"></i>
+        ${zone.name} · ${shop.stall}
+      </div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">${shop.desc}</p>
+
+      <div class="modal-section-title"><i class="fas fa-tag"></i> 经营品类</div>
+      <div class="shop-tags">${shop.tags.map(t => `<span class="shop-tag">${t}</span>`).join('')}</div>
+
+      <div class="modal-section-title"><i class="fas fa-receipt"></i> 参考价格</div>
+      <table class="modal-price-full">
+        <thead><tr><th>品名</th><th>参考价格</th></tr></thead>
+        <tbody>
+          ${shop.prices.map(p => `
+            <tr>
+              <td>${p.item} ${p.season ? '<span class="season-tag"><i class="fas fa-leaf"></i>时令</span>' : ''}</td>
+              <td>${p.price} <span class="price-unit">${p.unit}</span></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+
+      <div class="modal-section-title"><i class="fas fa-info-circle"></i> 温馨提示</div>
+      <ul class="modal-feature-list">
+        <li><i class="fas fa-check-circle"></i> 以上价格为参考价，实际以摊位标价为准</li>
+        <li><i class="fas fa-check-circle"></i> 批量采购可询价，部分商户支持议价</li>
+        <li><i class="fas fa-check-circle"></i> 如遇价格纠纷可至服务台咨询</li>
+      </ul>
+    </div>
+  `;
+
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('modal').classList.add('active');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) {
+    document.getElementById('modal').classList.remove('active');
+  }
+}
+
+function renderMapGrid() {
+  const container = document.getElementById('mapGrid');
+  container.innerHTML = marketData.zones.map(z => `
+    <button class="map-zone" style="background:${z.bgColor};color:${z.color};"
+            onclick="goToZone('${z.id}')">
+      <div class="mz-icon">${z.icon}</div>
+      <div class="mz-name">${z.name}</div>
+      <div class="mz-count">${z.location} · ${z.count}家</div>
+    </button>
+  `).join('');
+}
+
+function goToZone(zoneId) {
+  currentZone = zoneId;
+  switchPage('pageHome');
+  setTimeout(() => {
+    renderZoneTabs();
+    renderShopList();
+    document.getElementById('zoneTabs').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+}
+
+function renderPricePage() {
+  const container = document.getElementById('priceContent');
+  let html = '';
+
+  marketData.zones.forEach(zone => {
+    const shops = marketData.shops.filter(s => s.zone === zone.id);
+    html += `
+      <div class="section-title" style="margin-top:16px;">
+        <h2 style="color:${zone.color}">${zone.icon} ${zone.name}</h2>
+      </div>
+    `;
+    shops.forEach(shop => {
+      html += `
+        <div class="shop-card" style="margin-bottom:10px;" onclick="openShopDetail(${shop.id})">
+          <div class="shop-card-header">
+            <div class="shop-card-left">
+              <div class="shop-name" style="font-size:14px;">${shop.name} 
+                ${shop.featured ? '<span class="shop-badge badge-feature" style="font-size:9px;">特色</span>' : ''}
+              </div>
+              <div class="shop-stall"><i class="fas fa-map-pin"></i> ${shop.stall}</div>
+            </div>
+          </div>
+          <table class="price-table">
+            <thead><tr><th>品名</th><th>参考价</th></tr></thead>
+            <tbody>
+              ${shop.prices.map(p => `
+                <tr>
+                  <td>${p.item} ${p.season ? '<span class="season-tag"><i class="fas fa-leaf"></i>时令</span>' : ''}</td>
+                  <td>${p.price} <span class="price-unit">${p.unit}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    });
+  });
+
+  html += `
+    <div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:12px;">
+      <i class="fas fa-info-circle"></i> 价格每日更新，仅供参考，以实际标价为准
+    </div>
+  `;
+
+  container.innerHTML = html;
+}
+
+function handleSearch(val) {
+  const clearBtn = document.getElementById('clearBtn');
+  clearBtn.classList.toggle('show', val.length > 0);
+
+  if (val.trim().length === 0) {
+    closeSearch();
+    return;
+  }
+
+  const keyword = val.trim().toLowerCase();
+  const results = [];
+
+  marketData.shops.forEach(shop => {
+    const zone = marketData.zones.find(z => z.id === shop.zone);
+    if (shop.name.toLowerCase().includes(keyword)) {
+      results.push({ type: 'shop', shop, zone, matchField: '商户名' });
+      return;
+    }
+    if (shop.stall.toLowerCase().includes(keyword)) {
+      results.push({ type: 'shop', shop, zone, matchField: '摊位号' });
+      return;
+    }
+    if (shop.tags.some(t => t.includes(keyword))) {
+      results.push({ type: 'shop', shop, zone, matchField: '品类' });
+      return;
+    }
+    shop.prices.forEach(p => {
+      if (p.item.includes(keyword)) {
+        results.push({ type: 'item', shop, zone, price: p, matchField: '菜品' });
+      }
+    });
+  });
+
+  const seen = new Set();
+  const unique = results.filter(r => {
+    const key = r.type === 'shop' ? `shop-${r.shop.id}` : `item-${r.shop.id}-${r.price.item}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  const panel = document.getElementById('searchPanel');
+  const listEl = document.getElementById('searchResults');
+  const titleEl = document.getElementById('searchTitle');
+
+  titleEl.textContent = `搜索"${val}" · ${unique.length}个结果`;
+  panel.classList.add('active');
+
+  if (unique.length === 0) {
+    listEl.innerHTML = `
+      <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
+        <i class="fas fa-search" style="font-size:32px;margin-bottom:12px;display:block;opacity:0.3;"></i>
+        <p>未找到相关结果</p>
+        <p style="font-size:12px;margin-top:4px;">试试其他关键词，如"草莓""A-03""卤味"</p>
+      </div>
+    `;
+    return;
+  }
+
+  listEl.innerHTML = unique.map(r => {
+    if (r.type === 'shop') {
+      return `
+        <div class="search-result-item" onclick="closeSearch();openShopDetail(${r.shop.id})">
+          <div class="sr-name">${highlightText(r.shop.name, keyword)} <span style="font-size:11px;color:var(--text-muted);font-weight:400;">· ${r.matchField}</span></div>
+          <div class="sr-meta">
+            <span><i class="fas fa-map-pin"></i> ${r.zone.name} ${r.shop.stall}</span>
+            <span>${r.shop.tags.join(' / ')}</span>
+          </div>
+        </div>
+      `;
+    } else {
+      return `
+        <div class="search-result-item" onclick="closeSearch();openShopDetail(${r.shop.id})">
+          <div class="sr-name">${highlightText(r.price.item, keyword)} <span style="font-size:13px;font-weight:700;color:var(--orange);">${r.price.price}${r.price.unit}</span></div>
+          <div class="sr-meta">
+            <span>${r.shop.name}</span>
+            <span><i class="fas fa-map-pin"></i> ${r.zone.name} ${r.shop.stall}</span>
+          </div>
+        </div>
+      `;
+    }
+  }).join('');
+}
+
+function highlightText(text, keyword) {
+  const idx = text.toLowerCase().indexOf(keyword.toLowerCase());
+  if (idx === -1) return text;
+  return text.slice(0, idx) + '<mark>' + text.slice(idx, idx + keyword.length) + '</mark>' + text.slice(idx + keyword.length);
+}
+
+function closeSearch() {
+  document.getElementById('searchPanel').classList.remove('active');
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearBtn').classList.remove('show');
+  closeSearch();
+}
+
+function switchPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.page === pageId);
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function navTo(el) {
+  const pageId = el.dataset.page;
+  switchPage(pageId);
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+init();
+</script>
+</body>
+</html>
