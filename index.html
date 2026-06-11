@@ -6,1353 +6,525 @@
 <title>新葡萄农贸市场 · 采购指南</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.bmob.cn/static/bmob-min.js"></script>
 <style>
-  :root {
-    --green: #2D8B4E;
-    --green-light: #E8F5EC;
-    --green-dark: #1B6B38;
-    --orange: #E8793A;
-    --orange-light: #FFF3EB;
-    --bg: #F5F5F0;
-    --card: #FFFFFF;
-    --text: #1A1A1A;
-    --text-secondary: #6B7280;
-    --text-muted: #9CA3AF;
-    --border: #E5E5E0;
-    --shadow: 0 2px 12px rgba(0,0,0,0.06);
-    --radius: 14px;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Noto Sans SC', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    max-width: 480px;
-    margin: 0 auto;
-    min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
-  }
-
-  .status-bar {
-    height: 44px;
-    background: var(--green);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 16px;
-  }
-  .status-bar span {
-    color: rgba(255,255,255,0.9);
-    font-size: 12px;
-    font-weight: 500;
-  }
-
-  .main-header {
-    background: var(--green);
-    padding: 0 20px 24px;
-    position: relative;
-    overflow: hidden;
-  }
-  .main-header::before {
-    content: '';
-    position: absolute;
-    top: -60px; right: -40px;
-    width: 160px; height: 160px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 50%;
-  }
-  .main-header::after {
-    content: '';
-    position: absolute;
-    bottom: -30px; left: -20px;
-    width: 100px; height: 100px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 50%;
-  }
-  .header-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    position: relative;
-    z-index: 1;
-  }
-  .market-name {
-    color: #fff;
-    font-size: 22px;
-    font-weight: 900;
-    letter-spacing: 1px;
-  }
-  .market-name small {
-    display: block;
-    font-size: 11px;
-    font-weight: 400;
-    opacity: 0.75;
-    margin-top: 2px;
-    letter-spacing: 0;
-  }
-  .header-badge {
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px);
-    color: #fff;
-    font-size: 11px;
-    padding: 5px 12px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .header-badge i { font-size: 10px; color: var(--orange); }
-
-  .search-box {
-    position: relative;
-    z-index: 1;
-  }
-  .search-box input {
-    width: 100%;
-    height: 44px;
-    border: none;
-    border-radius: 22px;
-    padding: 0 16px 0 42px;
-    font-size: 14px;
-    font-family: inherit;
-    background: rgba(255,255,255,0.95);
-    color: var(--text);
-    outline: none;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  }
-  .search-box input::placeholder { color: var(--text-muted); }
-  .search-box i {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    font-size: 14px;
-  }
-  .search-box .clear-btn {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 24px; height: 24px;
-    border-radius: 50%;
-    border: none;
-    background: var(--border);
-    color: var(--text-secondary);
-    font-size: 10px;
-    cursor: pointer;
-    display: none;
-    align-items: center;
-    justify-content: center;
-  }
-  .search-box .clear-btn.show { display: flex; }
-
-  .search-results {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    background: #fff;
-    z-index: 50;
-    min-height: 100vh;
-    display: none;
-  }
-  .search-results.active { display: block; }
-  .search-results-header {
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-  .search-results-header button {
-    background: none; border: none;
-    font-size: 18px; color: var(--text);
-    cursor: pointer; padding: 4px;
-  }
-  .search-results-header span {
-    font-size: 15px; font-weight: 500;
-  }
-  .search-results-list { padding: 12px 20px; }
-  .search-result-item {
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-  }
-  .search-result-item:last-child { border-bottom: none; }
-  .search-result-item .sr-name {
-    font-size: 15px; font-weight: 500;
-    margin-bottom: 4px;
-  }
-  .search-result-item .sr-name mark {
-    background: #FDE68A; color: var(--text);
-    padding: 0 2px; border-radius: 2px;
-  }
-  .search-result-item .sr-meta {
-    font-size: 12px; color: var(--text-secondary);
-    display: flex; gap: 12px;
-  }
-
-  .content { padding: 0 16px 100px; margin-top: -8px; }
-
-  .quick-actions {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    margin-bottom: 20px;
-  }
-  .quick-action {
-    background: var(--card);
-    border-radius: 12px;
-    padding: 14px 8px;
-    text-align: center;
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-    transition: transform 0.15s, box-shadow 0.15s;
-    box-shadow: var(--shadow);
-  }
-  .quick-action:active { transform: scale(0.95); }
-  .quick-action .qa-icon {
-    width: 40px; height: 40px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 8px;
-    font-size: 18px;
-  }
-  .quick-action .qa-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text);
-  }
-
-  .section-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 20px 0 12px;
-  }
-  .section-title h2 {
-    font-size: 17px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .section-title h2::before {
-    content: '';
-    width: 4px; height: 18px;
-    background: var(--green);
-    border-radius: 2px;
-  }
-  .section-title a {
-    font-size: 12px;
-    color: var(--text-muted);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 2px;
-  }
-
-  .zone-tabs {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    margin-bottom: 16px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .zone-tabs::-webkit-scrollbar { display: none; }
-  .zone-tab {
-    flex-shrink: 0;
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    border: 1.5px solid var(--border);
-    background: var(--card);
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.2s;
-  }
-  .zone-tab.active {
-    background: var(--green);
-    color: #fff;
-    border-color: var(--green);
-    box-shadow: 0 3px 12px rgba(45,139,78,0.3);
-  }
-
-  .shop-list { display: flex; flex-direction: column; gap: 12px; }
-  .shop-card {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 16px;
-    box-shadow: var(--shadow);
-    cursor: pointer;
-    transition: transform 0.15s;
-    border: 1.5px solid transparent;
-  }
-  .shop-card:active { transform: scale(0.98); }
-  .shop-card.featured { border-color: var(--orange); }
-  .shop-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 10px;
-  }
-  .shop-card-left { flex: 1; }
-  .shop-name {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .shop-badge {
-    font-size: 10px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-weight: 500;
-  }
-  .badge-feature {
-    background: var(--orange-light);
-    color: var(--orange);
-  }
-  .badge-new {
-    background: var(--green-light);
-    color: var(--green);
-  }
-  .shop-stall {
-    font-size: 12px;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .shop-card-right {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--orange);
-  }
-  .shop-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 12px;
-  }
-  .shop-tag {
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 8px;
-    background: var(--bg);
-    color: var(--text-secondary);
-  }
-  .price-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .price-table th {
-    text-align: left;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text-muted);
-    padding: 6px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .price-table th:last-child { text-align: right; }
-  .price-table td {
-    font-size: 13px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .price-table tr:last-child td { border-bottom: none; }
-  .price-table td:last-child {
-    text-align: right;
-    font-weight: 700;
-    color: var(--orange);
-  }
-  .price-table .price-unit {
-    font-size: 11px;
-    font-weight: 400;
-    color: var(--text-muted);
-  }
-
-  .tips-card {
-    background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-top: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-  .tips-card::before {
-    content: '';
-    position: absolute;
-    top: -20px; right: -20px;
-    width: 80px; height: 80px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 50%;
-  }
-  .tips-card h3 {
-    color: #fff;
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .tips-list { list-style: none; }
-  .tips-list li {
-    color: rgba(255,255,255,0.88);
-    font-size: 13px;
-    line-height: 1.8;
-    padding-left: 16px;
-    position: relative;
-  }
-  .tips-list li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 10px;
-    width: 6px; height: 6px;
-    background: rgba(255,255,255,0.4);
-    border-radius: 50%;
-  }
-
-  .map-card {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 16px;
-    box-shadow: var(--shadow);
-    margin-top: 12px;
-  }
-  .map-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .map-zone {
-    border-radius: 10px;
-    padding: 14px 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.15s;
-    border: none;
-    font-family: inherit;
-  }
-  .map-zone:active { transform: scale(0.96); }
-  .map-zone .mz-icon { font-size: 22px; margin-bottom: 4px; }
-  .map-zone .mz-name { font-size: 13px; font-weight: 700; }
-  .map-zone .mz-count { font-size: 11px; opacity: 0.7; margin-top: 2px; }
-
-  .modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 100;
-    display: none;
-    align-items: flex-end;
-    justify-content: center;
-  }
-  .modal-overlay.active { display: flex; }
-  .modal-content {
-    background: #fff;
-    width: 100%;
-    max-width: 480px;
-    max-height: 80vh;
-    border-radius: 20px 20px 0 0;
-    padding: 0;
-    overflow-y: auto;
-    animation: slideUp 0.3s ease;
-  }
-  @keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
-  }
-  .modal-handle {
-    width: 36px; height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    margin: 12px auto;
-  }
-  .modal-body { padding: 0 20px 32px; }
-  .modal-shop-name {
-    font-size: 20px; font-weight: 900;
-    margin-bottom: 4px;
-  }
-  .modal-shop-stall {
-    font-size: 13px; color: var(--text-secondary);
-    margin-bottom: 16px;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .modal-section-title {
-    font-size: 14px; font-weight: 700;
-    margin: 16px 0 10px;
-    color: var(--green-dark);
-  }
-  .modal-feature-list { list-style: none; }
-  .modal-feature-list li {
-    font-size: 13px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .modal-feature-list li:last-child { border-bottom: none; }
-  .modal-feature-list li i {
-    color: var(--green);
-    font-size: 12px;
-    width: 20px; text-align: center;
-  }
-  .modal-price-full { width: 100%; border-collapse: collapse; margin-top: 8px; }
-  .modal-price-full th {
-    text-align: left; font-size: 12px; color: var(--text-muted);
-    padding: 8px 4px; border-bottom: 2px solid var(--border);
-    font-weight: 500;
-  }
-  .modal-price-full th:last-child { text-align: right; }
-  .modal-price-full td {
-    font-size: 13px; padding: 10px 4px;
-    border-bottom: 1px solid var(--border);
-  }
-  .modal-price-full td:last-child {
-    text-align: right; font-weight: 700; color: var(--orange);
-  }
-  .modal-price-full tr:last-child td { border-bottom: none; }
-
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 480px;
-    background: #fff;
-    border-top: 1px solid var(--border);
-    display: flex;
-    z-index: 80;
-    padding-bottom: env(safe-area-inset-bottom, 0);
-  }
-  .nav-item {
-    flex: 1;
-    padding: 10px 0 8px;
-    text-align: center;
-    cursor: pointer;
-    border: none;
-    background: none;
-    font-family: inherit;
-    transition: color 0.2s;
-  }
-  .nav-item i {
-    font-size: 20px;
-    display: block;
-    margin-bottom: 3px;
-    color: var(--text-muted);
-    transition: color 0.2s;
-  }
-  .nav-item span {
-    font-size: 10px;
-    color: var(--text-muted);
-    transition: color 0.2s;
-  }
-  .nav-item.active i { color: var(--green); }
-  .nav-item.active span { color: var(--green); font-weight: 700; }
-
-  .page { display: none; }
-  .page.active { display: block; }
-
-  .notice-bar {
-    background: var(--orange-light);
-    margin: 0 16px;
-    border-radius: 10px;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 16px;
-    overflow: hidden;
-  }
-  .notice-bar i { color: var(--orange); font-size: 14px; flex-shrink: 0; }
-  .notice-text {
-    font-size: 12px;
-    color: var(--orange);
-    white-space: nowrap;
-    animation: scrollLeft 15s linear infinite;
-  }
-  @keyframes scrollLeft {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-  }
-
-  .consult-card {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 20px;
-    box-shadow: var(--shadow);
-    margin-bottom: 12px;
-  }
-  .consult-card h3 {
-    font-size: 15px; font-weight: 700;
-    margin-bottom: 12px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .consult-card h3 i { color: var(--green); }
-  .consult-item {
-    display: flex; align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-    gap: 12px;
-  }
-  .consult-item:last-child { border-bottom: none; }
-  .consult-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0;
-  }
-  .consult-info { flex: 1; }
-  .consult-info .ci-label { font-size: 14px; font-weight: 500; }
-  .consult-info .ci-desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
-  .consult-arrow { color: var(--text-muted); font-size: 12px; }
-
-  .toast {
-    position: fixed;
-    top: 60px; left: 50%;
-    transform: translateX(-50%) translateY(-20px);
-    background: rgba(0,0,0,0.8);
-    color: #fff;
-    padding: 10px 24px;
-    border-radius: 20px;
-    font-size: 13px;
-    z-index: 200;
-    opacity: 0;
-    transition: all 0.3s;
-    pointer-events: none;
-  }
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-
-  .fade-in {
-    animation: fadeIn 0.4s ease forwards;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .season-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    background: #FEF3C7;
-    color: #D97706;
-    font-weight: 500;
-  }
+:root{--green:#2D8B4E;--green-light:#E8F5EC;--green-dark:#1B6B38;--green-gradient:linear-gradient(135deg,#2D8B4E 0%,#1B6B38 100%);--orange:#E8793A;--orange-light:#FFF3EB;--orange-gradient:linear-gradient(135deg,#E8793A 0%,#D4602A 100%);--bg:#F5F5F0;--card:#FFFFFF;--text:#1A1A1A;--text-secondary:#6B7280;--text-muted:#9CA3AF;--border:#E5E5E0;--shadow:0 2px 12px rgba(0,0,0,0.06);--shadow-md:0 4px 20px rgba(0,0,0,0.08);--shadow-lg:0 8px 32px rgba(0,0,0,0.12);--radius:14px;--radius-lg:20px;--red:#DC2626;--red-light:#FEE2E2;--yellow:#D97706;--yellow-light:#FEF3C7;--blue:#2563EB;--blue-light:#DBEAFE;--transition:0.25s cubic-bezier(0.4,0,0.2,1)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;min-height:100vh;position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.status-bar{height:44px;background:var(--green);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:relative;z-index:1}
+.status-bar .sb-time{color:rgba(255,255,255,0.9);font-size:13px;font-weight:600}
+.status-bar .sb-title{color:rgba(255,255,255,0.7);font-size:11px;font-weight:400}
+.main-header{background:var(--green-gradient);padding:0 20px 28px;position:relative;overflow:hidden}
+.main-header::before{content:'';position:absolute;top:-80px;right:-50px;width:200px;height:200px;background:rgba(255,255,255,0.05);border-radius:50%}
+.main-header::after{content:'';position:absolute;bottom:-40px;left:-30px;width:120px;height:120px;background:rgba(255,255,255,0.03);border-radius:50%}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;position:relative;z-index:1}
+.market-name{color:#fff;font-size:22px;font-weight:900;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.market-name small{display:block;font-size:11px;font-weight:400;opacity:0.7;margin-top:3px;letter-spacing:0}
+.header-badge{background:rgba(255,255,255,0.18);color:#fff;font-size:11px;padding:6px 14px;border-radius:20px;display:flex;align-items:center;gap:5px}
+.header-badge i{font-size:8px;color:#4ADE80;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.search-box{position:relative;z-index:1}
+.search-box input{width:100%;height:46px;border:none;border-radius:23px;padding:0 16px 0 44px;font-size:14px;font-family:inherit;background:rgba(255,255,255,0.96);color:var(--text);outline:none;box-shadow:0 4px 24px rgba(0,0,0,0.1);transition:box-shadow var(--transition)}
+.search-box input:focus{box-shadow:0 4px 24px rgba(45,139,78,0.2)}
+.search-box input::placeholder{color:var(--text-muted)}
+.search-box>i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px}
+.search-box .clear-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:50%;border:none;background:var(--border);color:var(--text-secondary);font-size:10px;cursor:pointer;display:none;align-items:center;justify-content:center;transition:background var(--transition)}
+.search-box .clear-btn.show{display:flex}
+.search-results{position:absolute;top:0;left:0;right:0;background:#fff;z-index:50;min-height:100vh;display:none;animation:fadeIn 0.2s ease}
+.search-results.active{display:block}
+.search-results-header{padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.search-results-header button{background:none;border:none;font-size:18px;color:var(--text);cursor:pointer;padding:4px}
+.search-results-header span{font-size:15px;font-weight:500}
+.search-results-list{padding:12px 20px}
+.search-result-item{padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background var(--transition)}
+.search-result-item:last-child{border-bottom:none}
+.search-result-item .sr-name{font-size:15px;font-weight:500;margin-bottom:4px}
+.search-result-item .sr-name mark{background:#FDE68A;color:var(--text);padding:0 2px;border-radius:2px}
+.search-result-item .sr-meta{font-size:12px;color:var(--text-secondary);display:flex;gap:12px}
+.content{padding:0 16px 100px;margin-top:-12px}
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px}
+.quick-action{background:var(--card);border-radius:14px;padding:16px 8px;text-align:center;cursor:pointer;border:none;font-family:inherit;transition:transform 0.15s,box-shadow 0.15s;box-shadow:var(--shadow)}
+.quick-action:active{transform:scale(0.93)}
+.quick-action .qa-icon{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:18px;transition:transform 0.2s}
+.quick-action:active .qa-icon{transform:scale(1.1)}
+.quick-action .qa-label{font-size:12px;font-weight:600;color:var(--text)}
+.section-title{display:flex;align-items:center;justify-content:space-between;margin:24px 0 14px}
+.section-title h2{font-size:17px;font-weight:700;display:flex;align-items:center;gap:6px}
+.section-title h2::before{content:'';width:4px;height:18px;background:var(--green-gradient);border-radius:2px}
+.section-title a{font-size:12px;color:var(--text-muted);text-decoration:none;display:flex;align-items:center;gap:2px;cursor:pointer;transition:color var(--transition)}
+.zone-tabs,.price-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.zone-tabs::-webkit-scrollbar,.price-tabs::-webkit-scrollbar{display:none}
+.zone-tab,.price-tab{flex-shrink:0;padding:8px 20px;border-radius:20px;font-size:13px;font-weight:500;border:1.5px solid var(--border);background:var(--card);color:var(--text-secondary);cursor:pointer;font-family:inherit;transition:all 0.25s cubic-bezier(0.4,0,0.2,1);white-space:nowrap}
+.zone-tab.active,.price-tab.active{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 3px 14px rgba(45,139,78,0.35);transform:scale(1.02)}
+.shop-list{display:flex;flex-direction:column;gap:14px}
+.shop-card{background:var(--card);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;border:1.5px solid transparent;position:relative;overflow:hidden}
+.shop-card:active{transform:scale(0.98)}
+.shop-card.featured{border-color:var(--orange);box-shadow:0 2px 16px rgba(232,121,58,0.12)}
+.shop-card.featured::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;background:linear-gradient(135deg,transparent 50%,rgba(232,121,58,0.06) 50%)}
+.shop-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.shop-card-left{flex:1}
+.shop-name{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.shop-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;letter-spacing:0.3px}
+.badge-feature{background:var(--orange-light);color:var(--orange)}
+.badge-new{background:var(--green-light);color:var(--green)}
+.shop-stall{font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:4px}
+.shop-card-right{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700;color:var(--orange)}
+.shop-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.shop-tag{font-size:11px;padding:3px 10px;border-radius:8px;background:var(--bg);color:var(--text-secondary);font-weight:500}
+.price-table{width:100%;border-collapse:collapse}
+.price-table th{text-align:left;font-size:11px;font-weight:500;color:var(--text-muted);padding:6px 0;border-bottom:1px solid var(--border)}
+.price-table th:last-child{text-align:right}
+.price-table td{font-size:13px;padding:9px 0;border-bottom:1px solid var(--border)}
+.price-table tr:last-child td{border-bottom:none}
+.price-table td:last-child{text-align:right;font-weight:700;color:var(--orange)}
+.price-table .price-unit{font-size:11px;font-weight:400;color:var(--text-muted)}
+.tips-card{background:var(--green-gradient);border-radius:var(--radius-lg);padding:22px;margin-top:24px;position:relative;overflow:hidden}
+.tips-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:rgba(255,255,255,0.08);border-radius:50%}
+.tips-card::after{content:'';position:absolute;bottom:-30px;left:20px;width:50px;height:50px;background:rgba(255,255,255,0.04);border-radius:50%}
+.tips-card h3{color:#fff;font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.tips-list{list-style:none;position:relative;z-index:1}
+.tips-list li{color:rgba(255,255,255,0.9);font-size:13px;line-height:1.9;padding-left:18px;position:relative}
+.tips-list li::before{content:'';position:absolute;left:0;top:11px;width:6px;height:6px;background:rgba(255,255,255,0.5);border-radius:50%}
+.map-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.map-zone{border-radius:14px;padding:16px 12px;text-align:center;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;border:none;font-family:inherit;box-shadow:var(--shadow)}
+.map-zone:active{transform:scale(0.95)}
+.map-zone .mz-icon{font-size:24px;margin-bottom:4px}
+.map-zone .mz-name{font-size:13px;font-weight:700}
+.map-zone .mz-count{font-size:11px;opacity:0.65;margin-top:3px}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal-content{background:#fff;width:100%;max-width:480px;max-height:82vh;border-radius:22px 22px 0 0;padding:0;overflow-y:auto;animation:slideUp 0.35s cubic-bezier(0.16,1,0.3,1)}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0.5}to{transform:translateY(0);opacity:1}}
+.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto}
+.modal-body{padding:0 22px 36px}
+.modal-shop-name{font-size:20px;font-weight:900;margin-bottom:4px}
+.modal-shop-stall{font-size:13px;color:var(--text-secondary);margin-bottom:18px;display:flex;align-items:center;gap:6px}
+.modal-section-title{font-size:14px;font-weight:700;margin:20px 0 10px;color:var(--green-dark)}
+.modal-feature-list{list-style:none}
+.modal-feature-list li{font-size:13px;padding:9px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.modal-feature-list li:last-child{border-bottom:none}
+.modal-feature-list li i{color:var(--green);font-size:12px;width:20px;text-align:center}
+.modal-price-full{width:100%;border-collapse:collapse;margin-top:8px}
+.modal-price-full th{text-align:left;font-size:12px;color:var(--text-muted);padding:8px 4px;border-bottom:2px solid var(--border);font-weight:500}
+.modal-price-full th:last-child{text-align:right}
+.modal-price-full td{font-size:13px;padding:10px 4px;border-bottom:1px solid var(--border)}
+.modal-price-full td:last-child{text-align:right;font-weight:700;color:var(--orange)}
+.modal-price-full tr:last-child td{border-bottom:none}
+#shopFormModal{z-index:160}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);border-top:1px solid rgba(229,229,224,0.6);display:flex;z-index:80;padding-bottom:env(safe-area-inset-bottom,0)}
+.nav-item{flex:1;padding:8px 0 6px;text-align:center;cursor:pointer;border:none;background:none;font-family:inherit;transition:all 0.25s;position:relative}
+.nav-item i{font-size:20px;display:block;margin-bottom:2px;color:var(--text-muted);transition:all 0.25s}
+.nav-item span{font-size:10px;color:var(--text-muted);transition:all 0.25s;font-weight:500}
+.nav-item.active i{color:var(--green);transform:scale(1.1)}
+.nav-item.active span{color:var(--green);font-weight:700}
+.nav-item.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:3px;background:var(--green);border-radius:0 0 3px 3px}
+.page{display:none}.page.active{display:block;animation:pageIn 0.3s ease}
+@keyframes pageIn{from{opacity:0}to{opacity:1}}
+.notice-bar{background:linear-gradient(135deg,var(--orange-light) 0%,#FFE8D6 100%);margin:0 16px;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:8px;margin-bottom:20px;overflow:hidden;border:1px solid rgba(232,121,58,0.1)}
+.notice-bar i{color:var(--orange);font-size:14px;flex-shrink:0}
+.notice-text{font-size:12px;color:var(--orange);white-space:nowrap;animation:scrollLeft 15s linear infinite;font-weight:500}
+@keyframes scrollLeft{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+.consult-card{background:var(--card);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow);margin-bottom:14px}
+.consult-card h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.consult-card h3 i{color:var(--green)}
+.consult-item{display:flex;align-items:center;padding:13px 0;border-bottom:1px solid var(--border);gap:12px;transition:opacity 0.15s}
+.consult-item:last-child{border-bottom:none}
+.consult-item:active{opacity:0.6}
+.consult-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.consult-info{flex:1}
+.consult-info .ci-label{font-size:14px;font-weight:600}
+.consult-info .ci-desc{font-size:12px;color:var(--text-secondary);margin-top:2px}
+.consult-arrow{color:var(--text-muted);font-size:12px}
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(26,26,26,0.88);backdrop-filter:blur(8px);color:#fff;padding:12px 28px;border-radius:24px;font-size:13px;font-weight:500;z-index:200;opacity:0;transition:all 0.35s cubic-bezier(0.16,1,0.3,1);pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,0.15)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.fade-in{animation:fadeIn 0.4s ease forwards}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.season-tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 7px;border-radius:5px;background:linear-gradient(135deg,#FEF3C7,#FDE68A);color:#B45309;font-weight:600}
+.aftersale-form-card,.my-records-card{background:var(--card);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow);margin-bottom:16px}
+.aftersale-form-card h3,.my-records-card h3{font-size:15px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.aftersale-form-card h3 i{color:var(--red)}
+.my-records-card h3 i{color:var(--blue)}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:7px;color:var(--text)}
+.form-group label .required{color:var(--red);margin-left:2px}
+.form-input{width:100%;height:46px;border:1.5px solid var(--border);border-radius:12px;padding:0 14px;font-size:14px;font-family:inherit;color:var(--text);background:#fff;outline:none;transition:all var(--transition)}
+.form-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(45,139,78,0.08)}
+.form-input::placeholder{color:var(--text-muted)}
+select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239CA3AF' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+textarea.form-input{height:88px;padding:12px 14px;resize:vertical;line-height:1.6}
+.submit-btn{width:100%;height:50px;border:none;border-radius:14px;background:var(--green-gradient);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity 0.2s,transform 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 16px rgba(45,139,78,0.3)}
+.submit-btn:active{transform:scale(0.97);opacity:0.9}
+.record-item{padding:16px 0;border-bottom:1px solid var(--border)}
+.record-item:last-child{border-bottom:none}
+.record-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.record-item-type{font-size:13px;font-weight:600}
+.record-item-time{font-size:11px;color:var(--text-muted)}
+.record-item-desc{font-size:12px;color:var(--text-secondary);line-height:1.7;margin-bottom:6px;word-break:break-all}
+.record-item-contact{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px}
+.status-badge{font-size:10px;padding:2px 9px;border-radius:10px;font-weight:600;display:inline-flex;align-items:center;gap:3px;letter-spacing:0.2px}
+.status-pending{background:var(--yellow-light);color:var(--yellow)}
+.status-processing{background:var(--blue-light);color:var(--blue)}
+.status-done{background:var(--green-light);color:var(--green)}
+.admin-entry{text-align:center;padding:28px 0 12px}
+.admin-entry-btn{background:none;border:none;font-size:12px;color:var(--text-muted);cursor:pointer;font-family:inherit;padding:8px 16px;opacity:0.5;transition:opacity 0.2s}
+.admin-entry-btn:active{opacity:0.8}
+.img-upload-area{display:flex;gap:10px;flex-wrap:wrap}
+.img-upload-btn{width:72px;height:72px;border:1.5px dashed var(--border);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:var(--bg);flex-shrink:0;transition:all var(--transition)}
+.img-upload-btn:active{border-color:var(--green);background:var(--green-light)}
+.img-upload-btn i{font-size:20px;color:var(--text-muted);margin-bottom:2px}
+.img-upload-btn span{font-size:10px;color:var(--text-muted)}
+.img-preview-item{width:72px;height:72px;border-radius:12px;position:relative;overflow:hidden;flex-shrink:0}
+.img-preview-item img{width:100%;height:100%;object-fit:cover;display:block}
+.img-preview-item .img-del-btn{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.55);color:#fff;border:none;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s}
+.img-preview-item .img-del-btn:active{background:var(--red)}
+.record-images,.admin-record-images{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.record-images img{width:56px;height:56px;border-radius:10px;object-fit:cover;cursor:pointer;border:1px solid var(--border);transition:transform 0.15s}
+.record-images img:active{transform:scale(0.95)}
+.admin-record-images img{width:64px;height:64px;border-radius:10px;object-fit:cover;cursor:pointer;border:1px solid var(--border)}
+.img-viewer-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.94);z-index:300;display:none;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px)}
+.img-viewer-overlay.active{display:flex;animation:fadeIn 0.2s ease}
+.img-viewer-overlay img{max-width:95%;max-height:90vh;object-fit:contain;border-radius:6px;box-shadow:0 8px 40px rgba(0,0,0,0.4)}
+.market-map-card{background:var(--card);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);margin-bottom:18px}
+.market-map-card .map-card-title{padding:16px 18px 8px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;color:var(--text)}
+.market-map-card .map-card-title i{color:var(--green)}
+.floor-tabs{display:flex;gap:0;padding:0 18px 8px}
+.floor-tab{flex:1;padding:8px 0;text-align:center;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;border:none;background:none;font-family:inherit;border-bottom:2px solid var(--border);transition:all 0.2s}
+.floor-tab.active{color:var(--green);border-bottom-color:var(--green)}
+.floor-tab .ft-sub{font-size:10px;font-weight:400;color:var(--text-muted);margin-top:1px}
+.map-img-wrapper{position:relative;width:100%;overflow:hidden;cursor:grab;background:#e8e8e3}
+.map-img-wrapper:active{cursor:grabbing}
+.map-img-wrapper img{width:100%;display:block;touch-action:none;-webkit-user-drag:none;user-select:none}
+.map-img-wrapper .map-placeholder{width:100%;height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--green-light);color:var(--green)}
+.map-img-wrapper .map-placeholder i{font-size:40px;margin-bottom:10px;opacity:0.4}
+.map-img-wrapper .map-placeholder span{font-size:13px;font-weight:500}
+.map-hint{padding:8px 18px;font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px}
+.map-zoom-controls{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:4px;z-index:5}
+.map-zoom-btn{width:32px;height:32px;border-radius:9px;border:none;background:rgba(255,255,255,0.92);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 6px rgba(0,0,0,0.12);transition:transform 0.15s}
+.map-zoom-btn:active{transform:scale(0.9)}
+.price-zone-card{background:var(--card);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px;border-left:4px solid transparent}
+.price-zone-header{padding:14px 16px 8px;display:flex;align-items:center;gap:8px}
+.price-zone-header .pz-icon{font-size:20px}
+.price-zone-header .pz-name{font-size:15px;font-weight:700;flex:1}
+.price-zone-header .pz-count{font-size:11px;color:var(--text-muted);font-weight:500}
+.price-shop-row{padding:12px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background 0.15s}
+.price-shop-row:active{background:var(--bg)}
+.price-shop-row .psr-name{font-size:13px;font-weight:600;margin-bottom:2px;display:flex;align-items:center;gap:6px}
+.price-shop-row .psr-stall{font-size:11px;color:var(--text-muted)}
+.price-shop-row table{width:100%;border-collapse:collapse;margin-top:6px}
+.price-shop-row th{text-align:left;font-size:10px;font-weight:500;color:var(--text-muted);padding:4px 0;border-bottom:1px solid var(--border)}
+.price-shop-row th:last-child{text-align:right}
+.price-shop-row td{font-size:12px;padding:6px 0;border-bottom:1px solid var(--border)}
+.price-shop-row tr:last-child td{border-bottom:none}
+.price-shop-row td:last-child{text-align:right;font-weight:700;color:var(--orange);font-size:13px}
+.price-shop-row .price-unit{font-size:10px;font-weight:400;color:var(--text-muted)}
+.admin-panel-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px);z-index:150;display:none;align-items:center;justify-content:center;padding:16px}
+.admin-panel-overlay.active{display:flex;animation:fadeIn 0.2s ease}
+.admin-panel{background:#fff;border-radius:20px;width:100%;max-width:440px;max-height:88vh;overflow:hidden;animation:slideUp 0.35s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;box-shadow:var(--shadow-lg)}
+.admin-panel-header{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.admin-panel-header h3{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.admin-panel-header h3 i{color:var(--red)}
+.admin-close-btn{background:none;border:none;font-size:20px;color:var(--text-muted);cursor:pointer;padding:4px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:background 0.15s}
+.admin-close-btn:active{background:var(--bg)}
+.admin-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg)}
+.admin-tab{flex:1;padding:12px 4px;text-align:center;font-size:11px;font-weight:600;color:var(--text-muted);cursor:pointer;border:none;background:none;font-family:inherit;transition:all 0.25s;position:relative;display:flex;flex-direction:column;align-items:center;gap:3px}
+.admin-tab i{font-size:17px;transition:transform 0.2s}
+.admin-tab:active i{transform:scale(0.9)}
+.admin-tab.active{color:var(--green)}
+.admin-tab.active::after{content:'';position:absolute;bottom:0;left:25%;right:25%;height:2.5px;background:var(--green-gradient);border-radius:2px}
+.admin-tab .tab-badge{position:absolute;top:5px;right:calc(50% - 24px);min-width:16px;height:16px;border-radius:8px;background:var(--red);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;animation:badgePop 0.3s ease}
+@keyframes badgePop{from{transform:scale(0)}to{transform:scale(1)}}
+.admin-tab-body{flex:1;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch}
+.admin-login{padding:36px 20px;text-align:center}
+.admin-login p{font-size:13px;color:var(--text-secondary);margin-bottom:16px}
+.admin-stat{display:flex;gap:8px;margin-bottom:14px}
+.admin-stat-item{flex:1;text-align:center;padding:12px 4px;border-radius:12px;font-size:11px;font-weight:500}
+.admin-stat-item .stat-num{font-size:24px;font-weight:900;display:block;margin-bottom:2px}
+.admin-record{background:var(--bg);border-radius:14px;padding:16px;margin-bottom:10px;transition:transform 0.15s}
+.admin-record:active{transform:scale(0.99)}
+.admin-record-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.admin-record-info{flex:1}
+.admin-record-info .ari-type{font-size:14px;font-weight:700;margin-bottom:2px}
+.admin-record-info .ari-time{font-size:11px;color:var(--text-muted)}
+.admin-record-desc{font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:8px;word-break:break-all}
+.admin-record-contact{font-size:12px;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.admin-record-contact i{color:var(--green);font-size:11px}
+.admin-record-stall{font-size:11px;color:var(--text-muted);margin-bottom:8px}
+.admin-record-actions{display:flex;gap:6px;flex-wrap:wrap}
+.admin-action-btn{padding:6px 12px;border-radius:8px;font-size:11px;font-weight:600;border:1.5px solid var(--border);background:#fff;color:var(--text-secondary);cursor:pointer;font-family:inherit;transition:all 0.15s}
+.admin-action-btn:active{transform:scale(0.95)}
+.admin-action-btn:hover{border-color:var(--green);color:var(--green)}
+.admin-action-btn.btn-danger:hover{border-color:var(--red);color:var(--red)}
+.admin-action-btn.btn-primary{border-color:var(--green);color:var(--green)}
+.admin-empty{text-align:center;padding:48px 20px;color:var(--text-muted)}
+.admin-empty i{font-size:40px;margin-bottom:14px;display:block;opacity:0.2}
+.admin-empty p{font-size:13px}
+.admin-filter-bar{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto}
+.admin-filter-btn{flex-shrink:0;padding:5px 13px;border-radius:16px;font-size:11px;border:1.5px solid var(--border);background:#fff;color:var(--text-secondary);cursor:pointer;font-family:inherit;transition:all 0.2s;font-weight:500}
+.admin-filter-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+.admin-map-floor{background:var(--bg);border-radius:14px;padding:16px;margin-bottom:12px}
+.admin-map-floor h4{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.admin-map-floor h4 i{color:var(--green)}
+.admin-map-floor .amf-status{font-size:12px;color:var(--text-secondary);margin-bottom:12px}
+.admin-map-floor .amf-status span{font-weight:600}
+.admin-map-preview{border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:12px}
+.admin-map-preview img{width:100%;display:block;max-height:120px;object-fit:cover}
+.admin-map-floor .amf-actions{display:flex;gap:8px}
+.admin-shop-item{background:var(--bg);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:transform 0.15s}
+.admin-shop-item:active{transform:scale(0.98)}
+.admin-shop-item .asi-info{flex:1;min-width:0}
+.admin-shop-item .asi-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.admin-shop-item .asi-meta{font-size:11px;color:var(--text-muted);margin-top:2px}
+.admin-shop-item .asi-actions{display:flex;gap:5px;flex-shrink:0}
+.admin-shop-item .asi-actions button{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.admin-shop-item .asi-actions button:active{transform:scale(0.9)}
+.price-row{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.price-row input{flex:1;height:38px;border:1.5px solid var(--border);border-radius:8px;padding:0 10px;font-size:13px;font-family:inherit;outline:none;transition:border-color var(--transition)}
+.price-row input:focus{border-color:var(--green)}
+.price-row .pr-del{width:28px;height:28px;border-radius:7px;border:none;background:var(--red-light);color:var(--red);cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.15s}
+.price-row .pr-del:active{transform:scale(0.9)}
+.add-price-btn{width:100%;height:38px;border:1.5px dashed var(--border);border-radius:10px;background:var(--bg);color:var(--text-muted);font-size:12px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;margin-bottom:14px;font-weight:500;transition:all 0.15s}
+.add-price-btn:active{border-color:var(--green);color:var(--green);background:var(--green-light)}
+.checkbox-row{display:flex;gap:18px;margin-bottom:14px}
+.checkbox-label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;font-weight:500}
+.checkbox-label input{width:16px;height:16px;accent-color:var(--green)}
+.zone-filter-bar{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
+.zone-filter-btn{flex-shrink:0;padding:5px 12px;border-radius:16px;font-size:11px;border:1.5px solid var(--border);background:#fff;color:var(--text-secondary);cursor:pointer;font-family:inherit;font-weight:500;transition:all 0.2s}
+.zone-filter-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s}
+.loading-overlay.hidden{opacity:0;pointer-events:none}
+.loading-spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{margin-top:16px;font-size:14px;color:var(--text-secondary);font-weight:500}
+.loading-sub{margin-top:8px;font-size:11px;color:var(--text-muted)}
 </style>
 </head>
 <body>
 
+<!-- 加载遮罩 -->
+<div class="loading-overlay" id="loadingOverlay">
+<div class="loading-spinner"></div>
+<div class="loading-text">正在连接云端</div>
+<div class="loading-sub">首次加载可能需要几秒</div>
+</div>
+
 <div class="toast" id="toast"></div>
+<div class="img-viewer-overlay" id="imgViewer" onclick="this.classList.remove('active')"><img id="imgViewerImg" src="" alt="查看大图"></div>
+<div class="search-results" id="searchPanel"><div class="search-results-header"><button onclick="closeSearch()"><i class="fas fa-arrow-left"></i></button><span id="searchTitle">搜索结果</span></div><div class="search-results-list" id="searchResults"></div></div>
+<div class="modal-overlay" id="modal" onclick="closeModal(event)"><div class="modal-content" id="modalContent"></div></div>
+<div class="modal-overlay" id="shopFormModal" onclick="if(event.target===this)this.classList.remove('active')"><div class="modal-content" id="shopFormContent"></div></div>
+<div class="admin-panel-overlay" id="adminOverlay" onclick="if(event.target===this)this.classList.remove('active')"><div class="admin-panel" id="adminPanel"></div></div>
+<input type="file" id="adminMapFileInput" accept="image/*" style="display:none" onchange="handleMapUpload(event)">
 
-<div class="search-results" id="searchPanel">
-  <div class="search-results-header">
-    <button onclick="closeSearch()"><i class="fas fa-arrow-left"></i></button>
-    <span id="searchTitle">搜索结果</span>
-  </div>
-  <div class="search-results-list" id="searchResults"></div>
-</div>
-
-<div class="modal-overlay" id="modal" onclick="closeModal(event)">
-  <div class="modal-content" id="modalContent"></div>
-</div>
-
-<!-- 首页 -->
 <div class="page active" id="pageHome">
-  <div class="status-bar"><span>新葡萄农贸市场 · 智慧导购</span></div>
-  <div class="main-header">
-    <div class="header-top">
-      <div class="market-name">
-        新葡萄农贸市场
-        <small>营业时间 07:30 - 11:30 15:00 - 18:00</small>
-      </div>
-      <div class="header-badge">
-        <i class="fas fa-circle"></i> 营业中
-      </div>
-    </div>
-    <div class="search-box">
-      <i class="fas fa-search"></i>
-      <input type="text" id="searchInput" placeholder="搜索菜品、商户、摊位号..." oninput="handleSearch(this.value)">
-      <button class="clear-btn" id="clearBtn" onclick="clearSearch()"><i class="fas fa-times"></i></button>
-    </div>
-  </div>
-
-  <div class="content">
-    <div class="notice-bar" style="margin-left:0;margin-right:0;">
-      <i class="fas fa-bullhorn"></i>
-      <span class="notice-text">本周产地直供活动，部分菜品限时特价，先到先得！</span>
-    </div>
-
-    <div class="quick-actions">
-      <button class="quick-action" onclick="switchPage('pageMap')">
-        <div class="qa-icon" style="background:#E8F5EC;color:#2D8B4E;"><i class="fas fa-map-signs"></i></div>
-        <div class="qa-label">区域地图</div>
-      </button>
-      <button class="quick-action" onclick="switchPage('pagePrice')">
-        <div class="qa-icon" style="background:#FFF3EB;color:#E8793A;"><i class="fas fa-tags"></i></div>
-        <div class="qa-label">价格查询</div>
-      </button>
-      <button class="quick-action" onclick="switchPage('pageConsult')">
-        <div class="qa-icon" style="background:#EFF6FF;color:#3B82F6;"><i class="fas fa-headset"></i></div>
-        <div class="qa-label">咨询导购</div>
-      </button>
-      <button class="quick-action" onclick="showToast('更多功能开发中')">
-        <div class="qa-icon" style="background:#FDF2F8;color:#EC4899;"><i class="fas fa-heart"></i></div>
-        <div class="qa-label">收藏清单</div>
-      </button>
-    </div>
-
-    <div class="section-title">
-      <h2>按区域逛</h2>
-      <a onclick="switchPage('pageMap')">全览 <i class="fas fa-chevron-right"></i></a>
-    </div>
-    <div class="zone-tabs" id="zoneTabs"></div>
-
-    <div class="shop-list" id="shopList"></div>
-
-    <div class="tips-card">
-      <h3><i class="fas fa-lightbulb"></i> 采购小贴士</h3>
-      <ul class="tips-list">       
-        <li>根茎类挑选：表皮光滑、手感沉实为佳</li>
-        <li>绿叶菜建议当天采购，不宜久存</li>
-        <li>水产选购注意眼球透明、鳃部鲜红</li>
-        <li>遇到价格疑问可到服务台咨询导购员</li>
-      </ul>
-    </div>
-  </div>
+<div class="status-bar"><span class="sb-time" id="statusTime">09:41</span><span class="sb-title">新葡萄农贸市场 · 智慧导购</span><span></span></div>
+<div class="main-header"><div class="header-top"><div class="market-name">新葡萄农贸市场<small>营业时间 07:30 - 11:30 15:00 - 18:00</small></div><div class="header-badge"><i class="fas fa-circle"></i> 营业中</div></div><div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="搜索菜品、商户、摊位号..." oninput="handleSearch(this.value)"><button class="clear-btn" id="clearBtn" onclick="clearSearch()"><i class="fas fa-times"></i></button></div></div>
+<div class="content">
+<div class="notice-bar" style="margin-left:0;margin-right:0;"><i class="fas fa-bullhorn"></i><span class="notice-text">本周产地直供活动，部分菜品限时特价，先到先得！</span></div>
+<div class="quick-actions">
+<button class="quick-action" onclick="switchPage('pageMap')"><div class="qa-icon" style="background:#E8F5EC;color:#2D8B4E;"><i class="fas fa-map-signs"></i></div><div class="qa-label">区域地图</div></button>
+<button class="quick-action" onclick="switchPage('pagePrice')"><div class="qa-icon" style="background:#FFF3EB;color:#E8793A;"><i class="fas fa-tags"></i></div><div class="qa-label">价格查询</div></button>
+<button class="quick-action" onclick="switchPage('pageConsult')"><div class="qa-icon" style="background:#DBEAFE;color:#2563EB;"><i class="fas fa-headset"></i></div><div class="qa-label">咨询导购</div></button>
+<button class="quick-action" onclick="switchPage('pageAfterSale')"><div class="qa-icon" style="background:#FEE2E2;color:#DC2626;"><i class="fas fa-clipboard-check"></i></div><div class="qa-label">售后中心</div></button>
+</div>
+<div class="section-title"><h2>按区域逛</h2><a onclick="switchPage('pageMap')">全览 <i class="fas fa-chevron-right"></i></a></div>
+<div class="zone-tabs" id="zoneTabs"></div>
+<div class="shop-list" id="shopList"></div>
+<div class="tips-card"><h3><i class="fas fa-lightbulb"></i> 采购小贴士</h3><ul class="tips-list"><li>根茎类挑选：表皮光滑、手感沉实为佳</li><li>绿叶菜建议当天采购，不宜久存</li><li>水产选购注意眼球透明、鳃部鲜红</li><li>遇到价格疑问可到服务台咨询导购员</li></ul></div>
+</div>
 </div>
 
-<!-- 区域地图页 -->
 <div class="page" id="pageMap">
-  <div class="status-bar"><span>区域导览</span></div>
-  <div class="main-header" style="padding-bottom:20px;">
-    <div class="header-top">
-      <div class="market-name">
-        <small style="cursor:pointer" onclick="switchPage('pageHome')"><i class="fas fa-arrow-left"></i> 返回首页</small>
-      </div>
-    </div>
-    <div style="color:rgba(255,255,255,0.9);font-size:15px;font-weight:700;">市场区域导览</div>
-    <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-top:4px;">点击区域查看详情</div>
-  </div>
-  <div class="content">
-    <div class="map-grid" id="mapGrid"></div>
-  </div>
+<div class="status-bar"><span class="sb-time"></span><span class="sb-title">区域导览</span><span></span></div>
+<div class="main-header" style="padding-bottom:20px;"><div class="header-top"><div class="market-name"><small style="cursor:pointer" onclick="switchPage('pageHome')"><i class="fas fa-arrow-left"></i> 返回首页</small></div></div><div style="color:rgba(255,255,255,0.95);font-size:16px;font-weight:700;">市场区域导览</div><div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:4px;">点击区域查看详情</div></div>
+<div class="content"><div class="market-map-card fade-in"><div class="map-card-title"><i class="fas fa-map"></i> 市场实景地图</div><div class="floor-tabs" id="floorTabs"></div><div class="map-img-wrapper" id="mapImgWrapper"><div class="map-zoom-controls"><button class="map-zoom-btn" onclick="mapZoomIn()"><i class="fas fa-plus"></i></button><button class="map-zoom-btn" onclick="mapZoomOut()"><i class="fas fa-minus"></i></button><button class="map-zoom-btn" onclick="mapZoomReset()"><i class="fas fa-undo"></i></button></div><div class="map-placeholder" id="mapPlaceholder"><i class="fas fa-map-marked-alt"></i><span>暂无地图，请联系管理员上传</span></div><img id="mapImg" src="" alt="市场地图" style="display:none;"></div><div class="map-hint" style="padding-bottom:14px;"><i class="fas fa-info-circle"></i> 双指缩放 / 双击放大</div></div><div class="section-title" style="margin-top:4px;"><h2>分区导览</h2></div><div class="map-grid" id="mapGrid"></div></div>
 </div>
 
-<!-- 价格查询页 -->
 <div class="page" id="pagePrice">
-  <div class="status-bar"><span>价格参考</span></div>
-  <div class="main-header" style="padding-bottom:20px;">
-    <div class="header-top">
-      <div class="market-name">
-        <small style="cursor:pointer" onclick="switchPage('pageHome')"><i class="fas fa-arrow-left"></i> 返回首页</small>
-      </div>
-    </div>
-    <div style="color:rgba(255,255,255,0.9);font-size:15px;font-weight:700;">今日参考价格</div>
-    <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-top:4px;">价格每日更新，仅供参考 · 单位：元/斤</div>
-  </div>
-  <div class="content" id="priceContent"></div>
+<div class="status-bar"><span class="sb-time"></span><span class="sb-title">价格参考</span><span></span></div>
+<div class="main-header" style="padding-bottom:20px;"><div class="header-top"><div class="market-name"><small style="cursor:pointer" onclick="switchPage('pageHome')"><i class="fas fa-arrow-left"></i> 返回首页</small></div></div><div style="color:rgba(255,255,255,0.95);font-size:16px;font-weight:700;">今日参考价格</div><div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:4px;">价格每日更新，仅供参考 · 单位：元/斤</div></div>
+<div class="content"><div class="price-tabs" id="priceTabs"></div><div id="priceContent"></div><div style="text-align:center;padding:24px 0;color:var(--text-muted);font-size:12px;"><i class="fas fa-info-circle"></i> 价格每日更新，仅供参考</div></div>
 </div>
 
-<!-- 咨询导购页 -->
 <div class="page" id="pageConsult">
-  <div class="status-bar"><span>导购服务</span></div>
-  <div class="main-header" style="padding-bottom:20px;">
-    <div class="header-top">
-      <div class="market-name">
-        <small style="cursor:pointer" onclick="switchPage('pageHome')"><i class="fas fa-arrow-left"></i> 返回首页</small>
-      </div>
-    </div>
-    <div style="color:rgba(255,255,255,0.9);font-size:15px;font-weight:700;">导购咨询服务</div>
-    <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-top:4px;">服务台位于市场正门入口</div>
-  </div>
-  <div class="content">
-    <div class="consult-card">
-      <h3><i class="fas fa-concierge-bell"></i> 现场服务</h3>
-      <div class="consult-item">
-        <div class="consult-icon" style="background:var(--green-light);color:var(--green);"><i class="fas fa-map-marker-alt"></i></div>
-        <div class="consult-info">
-          <div class="ci-label">服务台位置</div>
-          <div class="ci-desc">市场正门入口</div>
-        </div>
-        <i class="fas fa-chevron-right consult-arrow"></i>
-      </div>
-      <div class="consult-item">
-        <div class="consult-icon" style="background:var(--orange-light);color:var(--orange);"><i class="fas fa-clock"></i></div>
-        <div class="consult-info">
-          <div class="ci-label">服务时间</div>
-          <div class="ci-desc">每日 08:30 - 11:30 15:30 - 17:30</div>
-        </div>
-        <i class="fas fa-chevron-right consult-arrow"></i>
-      </div>
-      <div class="consult-item">
-        <div class="consult-icon" style="background:#EFF6FF;color:#3B82F6;"><i class="fas fa-phone-alt"></i></div>
-        <div class="consult-info">
-          <div class="ci-label">咨询电话</div>
-          <div class="ci-desc">0571-8888-6666</div>
-        </div>
-        <i class="fas fa-chevron-right consult-arrow"></i>
-      </div>
-    </div>
-
-    <div class="consult-card">
-      <h3><i class="fas fa-hands-helping"></i> 可提供帮助</h3>
-      <div class="consult-item" onclick="showToast('请前往服务台咨询')">
-        <div class="consult-icon" style="background:#FDF2F8;color:#EC4899;"><i class="fas fa-search"></i></div>
-        <div class="consult-info">
-          <div class="ci-label">品类指引</div>
-          <div class="ci-desc">帮您快速找到目标摊位</div>
-        </div>
-        <i class="fas fa-chevron-right consult-arrow"></i>
-      </div>
-      <div class="consult-item" onclick="showToast('请前往服务台咨询')">
-        <div class="consult-icon" style="background:#FEF3C7;color:#D97706;"><i class="fas fa-carrot"></i></div>
-        <div class="consult-info">
-          <div class="ci-label">菜品挑选建议</div>
-          <div class="ci-desc">教您辨别新鲜度与品质</div>
-        </div>
-        <i class="fas fa-chevron-right consult-arrow"></i>
-      </div>
-      <div class="consult-item" onclick="showToast('请前往服务台咨询')">
-        <div class="consult-icon" style="background:var(--green-light);color:var(--green);"><i class="fas fa-balance-scale"></i></div>
-        <div class="consult-info">
-          <div class="ci-label">价格咨询</div>
-          <div class="ci-desc">提供当日参考价格信息</div>
-        </div>
-        <i class="fas fa-chevron-right consult-arrow"></i>
-      </div>
-      <div class="consult-item" onclick="showToast('请前往服务台咨询')">
-        <div class="consult-icon" style="background:#F3E8FF;color:#9333EA;"><i class="fas fa-comment-dots"></i></div>
-        <div class="consult-info">
-          <div class="ci-label">投诉与建议</div>
-          <div class="ci-desc">您的反馈我们认真对待</div>
-        </div>
-        <i class="fas fa-chevron-right consult-arrow"></i>
-      </div>
-    </div>
-  </div>
+<div class="status-bar"><span class="sb-time"></span><span class="sb-title">导购服务</span><span></span></div>
+<div class="main-header" style="padding-bottom:20px;"><div class="header-top"><div class="market-name"><small style="cursor:pointer" onclick="switchPage('pageHome')"><i class="fas fa-arrow-left"></i> 返回首页</small></div></div><div style="color:rgba(255,255,255,0.95);font-size:16px;font-weight:700;">导购咨询服务</div><div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:4px;">服务台位于市场正门入口</div></div>
+<div class="content">
+<div class="consult-card"><h3><i class="fas fa-concierge-bell"></i> 现场服务</h3><div class="consult-item"><div class="consult-icon" style="background:var(--green-light);color:var(--green);"><i class="fas fa-map-marker-alt"></i></div><div class="consult-info"><div class="ci-label">服务台位置</div><div class="ci-desc">市场正门入口</div></div><i class="fas fa-chevron-right consult-arrow"></i></div><div class="consult-item"><div class="consult-icon" style="background:var(--orange-light);color:var(--orange);"><i class="fas fa-clock"></i></div><div class="consult-info"><div class="ci-label">服务时间</div><div class="ci-desc">每日 08:30 - 11:30 15:30 - 17:30</div></div><i class="fas fa-chevron-right consult-arrow"></i></div><div class="consult-item"><div class="consult-icon" style="background:var(--blue-light);color:var(--blue);"><i class="fas fa-phone-alt"></i></div><div class="consult-info"><div class="ci-label">咨询电话</div><div class="ci-desc">0571-8888-6666</div></div><i class="fas fa-chevron-right consult-arrow"></i></div></div>
+<div class="consult-card"><h3><i class="fas fa-hands-helping"></i> 可提供帮助</h3><div class="consult-item" onclick="showToast('请前往服务台咨询')"><div class="consult-icon" style="background:#FDF2F8;color:#EC4899;"><i class="fas fa-search"></i></div><div class="consult-info"><div class="ci-label">品类指引</div><div class="ci-desc">帮您快速找到目标摊位</div></div><i class="fas fa-chevron-right consult-arrow"></i></div><div class="consult-item" onclick="showToast('请前往服务台咨询')"><div class="consult-icon" style="background:var(--yellow-light);color:var(--yellow);"><i class="fas fa-carrot"></i></div><div class="consult-info"><div class="ci-label">菜品挑选建议</div><div class="ci-desc">教您辨别新鲜度与品质</div></div><i class="fas fa-chevron-right consult-arrow"></i></div><div class="consult-item" onclick="showToast('请前往服务台咨询')"><div class="consult-icon" style="background:var(--green-light);color:var(--green);"><i class="fas fa-balance-scale"></i></div><div class="consult-info"><div class="ci-label">价格咨询</div><div class="ci-desc">提供当日参考价格信息</div></div><i class="fas fa-chevron-right consult-arrow"></i></div><div class="consult-item" onclick="showToast('请前往服务台咨询')"><div class="consult-icon" style="background:#F3E8FF;color:#9333EA;"><i class="fas fa-comment-dots"></i></div><div class="consult-info"><div class="ci-label">投诉与建议</div><div class="ci-desc">您的反馈我们认真对待</div></div><i class="fas fa-chevron-right consult-arrow"></i></div></div>
+</div>
 </div>
 
-<!-- 底部导航 -->
+<div class="page" id="pageAfterSale">
+<div class="status-bar"><span class="sb-time"></span><span class="sb-title">售后中心</span><span></span></div>
+<div class="main-header" style="padding-bottom:20px;"><div class="header-top"><div class="market-name"><small style="cursor:pointer" onclick="switchPage('pageHome')"><i class="fas fa-arrow-left"></i> 返回首页</small></div></div><div style="color:rgba(255,255,255,0.95);font-size:16px;font-weight:700;">售后问题反馈</div><div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:4px;">提交后工作人员将尽快联系您处理</div></div>
+<div class="content">
+<div class="aftersale-form-card fade-in"><h3><i class="fas fa-pen-alt"></i> 填写反馈信息</h3>
+<div class="form-group"><label>联系人姓名</label><input type="text" class="form-input" id="asName" placeholder="请输入您的姓名" maxlength="20"></div>
+<div class="form-group"><label>联系电话 <span class="required">*</span></label><input type="tel" class="form-input" id="asPhone" placeholder="请输入手机号码" maxlength="11"></div>
+<div class="form-group"><label>购买摊位</label><select class="form-input" id="asStall"><option value="">请选择摊位（可选）</option></select></div>
+<div class="form-group"><label>问题类型 <span class="required">*</span></label><select class="form-input" id="asType"><option value="">请选择问题类型</option><option value="商品质量">商品质量</option><option value="短斤少两">短斤少两</option><option value="价格争议">价格争议</option><option value="服务态度">服务态度</option><option value="食品卫生">食品卫生</option><option value="退换货">退换货</option><option value="其他问题">其他问题</option></select></div>
+<div class="form-group"><label>问题描述 <span class="required">*</span></label><textarea class="form-input" id="asDesc" placeholder="请详细描述您遇到的问题..." maxlength="500"></textarea><div style="text-align:right;font-size:11px;color:var(--text-muted);margin-top:4px;"><span id="asDescCount">0</span>/500</div></div>
+<div class="form-group"><label>上传图片 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">（最多3张，可选）</span></label><div class="img-upload-area" id="imgUploadArea"><div class="img-upload-btn" id="imgUploadBtn" onclick="document.getElementById('imgFileInput').click()"><i class="fas fa-camera"></i><span>添加图片</span></div><input type="file" id="imgFileInput" accept="image/*" multiple style="display:none" onchange="handleImgSelect(event)"></div></div>
+<button class="submit-btn" onclick="submitAfterSale()"><i class="fas fa-paper-plane"></i> 提交反馈</button>
+</div>
+<div class="my-records-card fade-in" style="animation-delay:0.1s"><h3><i class="fas fa-history"></i> 我的反馈记录</h3><div id="myRecordsList"><div class="admin-empty"><i class="fas fa-spinner fa-spin"></i><p>加载中...</p></div></div></div>
+<div class="admin-entry"><button class="admin-entry-btn" onclick="openAdminLogin()"><i class="fas fa-cog"></i> 管理查看</button></div>
+</div>
+</div>
+
 <div class="bottom-nav">
-  <button class="nav-item active" data-page="pageHome" onclick="navTo(this)">
-    <i class="fas fa-home"></i><span>首页</span>
-  </button>
-  <button class="nav-item" data-page="pageMap" onclick="navTo(this)">
-    <i class="fas fa-th-large"></i><span>区域</span>
-  </button>
-  <button class="nav-item" data-page="pagePrice" onclick="navTo(this)">
-    <i class="fas fa-tags"></i><span>价格</span>
-  </button>
-  <button class="nav-item" data-page="pageConsult" onclick="navTo(this)">
-    <i class="fas fa-headset"></i><span>服务</span>
-  </button>
+<button class="nav-item active" data-page="pageHome" onclick="navTo(this)"><i class="fas fa-home"></i><span>首页</span></button>
+<button class="nav-item" data-page="pageMap" onclick="navTo(this)"><i class="fas fa-th-large"></i><span>区域</span></button>
+<button class="nav-item" data-page="pagePrice" onclick="navTo(this)"><i class="fas fa-tags"></i><span>价格</span></button>
+<button class="nav-item" data-page="pageConsult" onclick="navTo(this)"><i class="fas fa-headset"></i><span>服务</span></button>
+<button class="nav-item" data-page="pageAfterSale" onclick="navTo(this)"><i class="fas fa-clipboard-check"></i><span>售后</span></button>
 </div>
 
 <script>
-// ===== 数据 =====
-const marketData = {
-  zones: [
-    { id: 'veg', name: '蔬菜区', icon: '🥬', color: '#2D8B4E', bgColor: '#E8F5EC', location: 'A区', count: 12 },
-    { id: 'fruit', name: '水果区', icon: '🍎', color: '#DC2626', bgColor: '#FEE2E2', location: 'B区', count: 8 },
-    { id: 'meat', name: '肉禽区', icon: '🥩', color: '#9333EA', bgColor: '#F3E8FF', location: 'C区', count: 6 },
-    { id: 'seafood', name: '水产区', icon: '🐟', color: '#0891B2', bgColor: '#CFFAFE', location: 'D区', count: 5 },
-    { id: 'dry', name: '干货区', icon: '🫘', color: '#D97706', bgColor: '#FEF3C7', location: 'E区', count: 7 },
-    { id: 'deli', name: '熟食区', icon: '🍗', color: '#E8793A', bgColor: '#FFF3EB', location: 'F区', count: 4 }
-  ],
-  shops: [
-    {
-      id: 1, zone: 'veg', name: '老李蔬菜行', stall: 'A-03',
-      featured: true, isNew: false,
-      tags: ['叶菜类', '根茎类', '时令鲜蔬'],
-      desc: '经营15年老店，品种齐全，每日产地直供',
-      prices: [
-        { item: '小青菜', price: '3.5', unit: '元/斤' },
-        { item: '西红柿', price: '4.0-5.0', unit: '元/斤', range: true },
-        { item: '土豆', price: '2.5', unit: '元/斤' },
-        { item: '黄瓜', price: '3.0', unit: '元/斤' },
-        { item: '茼蒿', price: '5.0', unit: '元/斤', season: true }
-      ]
-    },
-    {
-      id: 2, zone: 'veg', name: '绿野菜铺', stall: 'A-07',
-      featured: false, isNew: true,
-      tags: ['有机蔬菜', '沙拉菜', '进口菜'],
-      desc: '主打有机和进口蔬菜，品质上乘',
-      prices: [
-        { item: '有机生菜', price: '8.0', unit: '元/斤' },
-        { item: '羽衣甘蓝', price: '12.0', unit: '元/斤' },
-        { item: '芝麻菜', price: '10.0', unit: '元/斤' },
-        { item: '罗马生菜', price: '7.0', unit: '元/斤' }
-      ]
-    },
-    {
-      id: 3, zone: 'veg', name: '张记菜摊', stall: 'A-11',
-      featured: false, isNew: false,
-      tags: ['家常菜', '豆制品', '菌菇'],
-      desc: '家常蔬菜和豆制品，经济实惠',
-      prices: [
-        { item: '大白菜', price: '1.5', unit: '元/斤' },
-        { item: '老豆腐', price: '3.0', unit: '元/块' },
-        { item: '金针菇', price: '4.0', unit: '元/袋' },
-        { item: '香菇', price: '8.0', unit: '元/斤' }
-      ]
-    },
-    {
-      id: 4, zone: 'fruit', name: '鲜果坊', stall: 'B-02',
-      featured: true, isNew: false,
-      tags: ['时令水果', '进口水果', '果切'],
-      desc: '品种最全的水果行，支持果切定制',
-      prices: [
-        { item: '红富士苹果', price: '5.0-7.0', unit: '元/斤', range: true },
-        { item: '云南香蕉', price: '3.5', unit: '元/斤' },
-        { item: '丹东草莓', price: '25.0', unit: '元/斤', season: true },
-        { item: '车厘子', price: '45.0-65.0', unit: '元/斤', range: true }
-      ]
-    },
-    {
-      id: 5, zone: 'fruit', name: '果真鲜', stall: 'B-05',
-      featured: false, isNew: false,
-      tags: ['国产水果', '礼盒装', '批发'],
-      desc: '十斤起享批发价，礼盒定制',
-      prices: [
-        { item: '赣南脐橙', price: '4.5', unit: '元/斤' },
-        { item: '砂糖橘', price: '5.0', unit: '元/斤', season: true },
-        { item: '麒麟西瓜', price: '3.0', unit: '元/斤' }
-      ]
-    },
-    {
-      id: 6, zone: 'meat', name: '金锣冷鲜', stall: 'C-01',
-      featured: true, isNew: false,
-      tags: ['猪肉', '牛肉', '品质保障'],
-      desc: '冷链直供，检验检疫齐全',
-      prices: [
-        { item: '五花肉', price: '18.0', unit: '元/斤' },
-        { item: '里脊肉', price: '22.0', unit: '元/斤' },
-        { item: '牛腱子', price: '42.0', unit: '元/斤' },
-        { item: '排骨', price: '28.0', unit: '元/斤' }
-      ]
-    },
-    {
-      id: 7, zone: 'meat', name: '禽旺家禽', stall: 'C-04',
-      featured: false, isNew: false,
-      tags: ['土鸡', '老鸭', '鲜活禽'],
-      desc: '现杀现卖，活禽可挑选',
-      prices: [
-        { item: '土鸡', price: '28.0', unit: '元/斤' },
-        { item: '老鸭', price: '25.0', unit: '元/斤' },
-        { item: '鸽子', price: '35.0', unit: '元/只' }
-      ]
-    },
-    {
-      id: 8, zone: 'seafood', name: '海之鲜', stall: 'D-02',
-      featured: true, isNew: false,
-      tags: ['活海鲜', '贝类', '虾蟹'],
-      desc: '日进两批，活鲜保证',
-      prices: [
-        { item: '基围虾', price: '38.0', unit: '元/斤' },
-        { item: '大闸蟹', price: '55.0-88.0', unit: '元/斤', range: true, season: true },
-        { item: '花甲', price: '12.0', unit: '元/斤' },
-        { item: '鲈鱼', price: '18.0', unit: '元/斤' }
-      ]
-    },
-    {
-      id: 9, zone: 'seafood', name: '渔人码头', stall: 'D-05',
-      featured: false, isNew: true,
-      tags: ['淡水鱼', '鱼丸', '加工'],
-      desc: '支持杀鱼去鳞，鱼丸现做',
-      prices: [
-        { item: '草鱼', price: '10.0', unit: '元/斤' },
-        { item: '鲫鱼', price: '12.0', unit: '元/斤' },
-        { item: '手工鱼丸', price: '22.0', unit: '元/斤' }
-      ]
-    },
-    {
-      id: 10, zone: 'dry', name: '百味干货', stall: 'E-01',
-      featured: true, isNew: false,
-      tags: ['调料', '干菌', '杂粮'],
-      desc: '一站购齐调味料和干货',
-      prices: [
-        { item: '八角', price: '35.0', unit: '元/斤' },
-        { item: '黑木耳', price: '40.0', unit: '元/斤' },
-        { item: '黄花菜', price: '25.0', unit: '元/斤' },
-        { item: '绿豆', price: '6.0', unit: '元/斤' }
-      ]
-    },
-    {
-      id: 11, zone: 'dry', name: '福源坚果', stall: 'E-04',
-      featured: false, isNew: false,
-      tags: ['坚果', '果干', '零食'],
-      desc: '坚果果干品种丰富，可试吃',
-      prices: [
-        { item: '核桃', price: '20.0', unit: '元/斤' },
-        { item: '葡萄干', price: '15.0', unit: '元/斤' },
-        { item: '腰果', price: '38.0', unit: '元/斤' }
-      ]
-    },
-    {
-      id: 12, zone: 'deli', name: '卤大厨', stall: 'F-01',
-      featured: true, isNew: false,
-      tags: ['卤味', '凉菜', '现卤现卖'],
-      desc: '祖传卤方，每日现卤',
-      prices: [
-        { item: '卤牛肉', price: '58.0', unit: '元/斤' },
-        { item: '卤鸭脖', price: '28.0', unit: '元/斤' },
-        { item: '凉拌海带', price: '12.0', unit: '元/斤' },
-        { item: '卤鸡蛋', price: '2.0', unit: '元/个' }
-      ]
-    },
-    {
-      id: 13, zone: 'deli', name: '香酥记', stall: 'F-03',
-      featured: false, isNew: false,
-      tags: ['炸鸡', '烤鸭', '熟食'],
-      desc: '现烤现炸，外酥里嫩',
-      prices: [
-        { item: '烤鸭', price: '32.0', unit: '元/只' },
-        { item: '炸鸡腿', price: '6.0', unit: '元/个' },
-        { item: '盐水鸭', price: '38.0', unit: '元/斤' }
-      ]
-    }
-  ]
-};
+// ========== Bmob 初始化 ==========
+Bmob.initialize('59423e6c7cd551463dc8eb9766c6ad3f','1d64b1148dcfec6012248961f8977642');
+var Shop = Bmob.Object.extend('Shop');
+var Record = Bmob.Object.extend('Record');
+var Setting = Bmob.Object.extend('Setting');
 
-let currentZone = 'veg';
+// ========== 常量 ==========
+var defaultZones=[{id:'veg',name:'蔬菜区',icon:'🥬',color:'#2D8B4E',bgColor:'#E8F5EC',location:'A区'},{id:'fruit',name:'水果区',icon:'🍎',color:'#DC2626',bgColor:'#FEE2E2',location:'B区'},{id:'meat',name:'肉禽区',icon:'🥩',color:'#9333EA',bgColor:'#F3E8FF',location:'C区'},{id:'seafood',name:'水产区',icon:'🐟',color:'#0891B2',bgColor:'#CFFAFE',location:'D区'},{id:'dry',name:'干货区',icon:'🫘',color:'#D97706',bgColor:'#FEF3C7',location:'E区'},{id:'deli',name:'熟食区',icon:'🍗',color:'#E8793A',bgColor:'#FFF3EB',location:'F区'}];
+var defaultShops=[{zone:'veg',name:'老李蔬菜行',stall:'A-03',featured:true,isNew:false,tags:['叶菜类','根茎类','时令鲜蔬'],desc:'经营15年老店，品种齐全，每日产地直供',prices:[{item:'小青菜',price:'3.5',unit:'元/斤'},{item:'西红柿',price:'4.0-5.0',unit:'元/斤'},{item:'土豆',price:'2.5',unit:'元/斤'},{item:'黄瓜',price:'3.0',unit:'元/斤'},{item:'茼蒿',price:'5.0',unit:'元/斤',season:true}]},{zone:'veg',name:'绿野菜铺',stall:'A-07',featured:false,isNew:true,tags:['有机蔬菜','沙拉菜','进口菜'],desc:'主打有机和进口蔬菜，品质上乘',prices:[{item:'有机生菜',price:'8.0',unit:'元/斤'},{item:'羽衣甘蓝',price:'12.0',unit:'元/斤'},{item:'芝麻菜',price:'10.0',unit:'元/斤'},{item:'罗马生菜',price:'7.0',unit:'元/斤'}]},{zone:'veg',name:'张记菜摊',stall:'A-11',featured:false,isNew:false,tags:['家常菜','豆制品','菌菇'],desc:'家常蔬菜和豆制品，经济实惠',prices:[{item:'大白菜',price:'1.5',unit:'元/斤'},{item:'老豆腐',price:'3.0',unit:'元/块'},{item:'金针菇',price:'4.0',unit:'元/袋'},{item:'香菇',price:'8.0',unit:'元/斤'}]},{zone:'fruit',name:'鲜果坊',stall:'B-02',featured:true,isNew:false,tags:['时令水果','进口水果','果切'],desc:'品种最全的水果行，支持果切定制',prices:[{item:'红富士苹果',price:'5.0-7.0',unit:'元/斤'},{item:'云南香蕉',price:'3.5',unit:'元/斤'},{item:'丹东草莓',price:'25.0',unit:'元/斤',season:true},{item:'车厘子',price:'45.0-65.0',unit:'元/斤'}]},{zone:'fruit',name:'果真鲜',stall:'B-05',featured:false,isNew:false,tags:['国产水果','礼盒装','批发'],desc:'十斤起享批发价，礼盒定制',prices:[{item:'赣南脐橙',price:'4.5',unit:'元/斤'},{item:'砂糖橘',price:'5.0',unit:'元/斤',season:true},{item:'麒麟西瓜',price:'3.0',unit:'元/斤'}]},{zone:'meat',name:'金锣冷鲜',stall:'C-01',featured:true,isNew:false,tags:['猪肉','牛肉','品质保障'],desc:'冷链直供，检验检疫齐全',prices:[{item:'五花肉',price:'18.0',unit:'元/斤'},{item:'里脊肉',price:'22.0',unit:'元/斤'},{item:'牛腱子',price:'42.0',unit:'元/斤'},{item:'排骨',price:'28.0',unit:'元/斤'}]},{zone:'meat',name:'禽旺家禽',stall:'C-04',featured:false,isNew:false,tags:['土鸡','老鸭','鲜活禽'],desc:'现杀现卖，活禽可挑选',prices:[{item:'土鸡',price:'28.0',unit:'元/斤'},{item:'老鸭',price:'25.0',unit:'元/斤'},{item:'鸽子',price:'35.0',unit:'元/只'}]},{zone:'seafood',name:'海之鲜',stall:'D-02',featured:true,isNew:false,tags:['活海鲜','贝类','虾蟹'],desc:'日进两批，活鲜保证',prices:[{item:'基围虾',price:'38.0',unit:'元/斤'},{item:'大闸蟹',price:'55.0-88.0',unit:'元/斤',season:true},{item:'花甲',price:'12.0',unit:'元/斤'},{item:'鲈鱼',price:'18.0',unit:'元/斤'}]},{zone:'seafood',name:'渔人码头',stall:'D-05',featured:false,isNew:true,tags:['淡水鱼','鱼丸','加工'],desc:'支持杀鱼去鳞，鱼丸现做',prices:[{item:'草鱼',price:'10.0',unit:'元/斤'},{item:'鲫鱼',price:'12.0',unit:'元/斤'},{item:'手工鱼丸',price:'22.0',unit:'元/斤'}]},{zone:'dry',name:'百味干货',stall:'E-01',featured:true,isNew:false,tags:['调料','干菌','杂粮'],desc:'一站购齐调味料和干货',prices:[{item:'八角',price:'35.0',unit:'元/斤'},{item:'黑木耳',price:'40.0',unit:'元/斤'},{item:'黄花菜',price:'25.0',unit:'元/斤'},{item:'绿豆',price:'6.0',unit:'元/斤'}]},{zone:'dry',name:'福源坚果',stall:'E-04',featured:false,isNew:false,tags:['坚果','果干','零食'],desc:'坚果果干品种丰富，可试吃',prices:[{item:'核桃',price:'20.0',unit:'元/斤'},{item:'葡萄干',price:'15.0',unit:'元/斤'},{item:'腰果',price:'38.0',unit:'元/斤'}]},{zone:'deli',name:'卤大厨',stall:'F-01',featured:true,isNew:false,tags:['卤味','凉菜','现卤现卖'],desc:'祖传卤方，每日现卤',prices:[{item:'卤牛肉',price:'58.0',unit:'元/斤'},{item:'卤鸭脖',price:'28.0',unit:'元/斤'},{item:'凉拌海带',price:'12.0',unit:'元/斤'},{item:'卤鸡蛋',price:'2.0',unit:'元/个'}]},{zone:'deli',name:'香酥记',stall:'F-03',featured:false,isNew:false,tags:['炸鸡','烤鸭','熟食'],desc:'现烤现炸，外酥里嫩',prices:[{item:'烤鸭',price:'32.0',unit:'元/只'},{item:'炸鸡腿',price:'6.0',unit:'元/个'},{item:'盐水鸭',price:'38.0',unit:'元/斤'}]}];
 
-function init() {
-  renderZoneTabs();
-  renderShopList();
-  renderMapGrid();
-  renderPricePage();
-}
+var currentZone='veg',priceZone='all',mapFloor=1,adminAuthenticated=false,adminFilterStatus='all',adminShopZoneFilter='all',adminTab='records',pendingImageUrls=[],shopsCache=[],uploadingFloor=1;
+var MAX_IMAGES=3,FLOORS=[{id:1,label:'1F',desc:'蔬菜·水果·干货'},{id:2,label:'2F',desc:'肉禽·水产·熟食'}];
 
-function renderZoneTabs() {
-  const container = document.getElementById('zoneTabs');
-  container.innerHTML = marketData.zones.map(z => `
-    <button class="zone-tab ${z.id === currentZone ? 'active' : ''}" 
-            onclick="selectZone('${z.id}')">${z.icon} ${z.name}</button>
-  `).join('');
-}
+// ========== Bmob Promise 封装 ==========
+function bmobSave(obj,data){return new Promise(function(resolve,reject){if(data){obj.save(data,{success:resolve,error:function(r,e){reject(e);}});}else{obj.save({success:resolve,error:function(r,e){reject(e);}});}});}
+function bmobFind(query){return new Promise(function(resolve,reject){query.find({success:resolve,error:function(e){reject(e);}});});}
+function bmobCount(query){return new Promise(function(resolve,reject){query.count({success:resolve,error:function(e){reject(e);}});});}
 
-function selectZone(zoneId) {
-  currentZone = zoneId;
-  renderZoneTabs();
-  renderShopList();
-}
-
-function renderShopList() {
-  const container = document.getElementById('shopList');
-  const shops = marketData.shops.filter(s => s.zone === currentZone);
-
-  container.innerHTML = shops.map((shop, idx) => `
-    <div class="shop-card ${shop.featured ? 'featured' : ''} fade-in" 
-         style="animation-delay: ${idx * 0.08}s"
-         onclick="openShopDetail(${shop.id})">
-      <div class="shop-card-header">
-        <div class="shop-card-left">
-          <div class="shop-name">
-            ${shop.name}
-            ${shop.featured ? '<span class="shop-badge badge-feature">特色</span>' : ''}
-            ${shop.isNew ? '<span class="shop-badge badge-new">新入驻</span>' : ''}
-          </div>
-          <div class="shop-stall">
-            <i class="fas fa-map-pin"></i> ${shop.stall}
-          </div>
-        </div>
-        <div class="shop-card-right">
-          <i class="fas fa-chevron-right"></i>
-        </div>
-      </div>
-      <div class="shop-tags">
-        ${shop.tags.map(t => `<span class="shop-tag">${t}</span>`).join('')}
-      </div>
-      <table class="price-table">
-        <thead><tr><th>品名</th><th>参考价</th></tr></thead>
-        <tbody>
-          ${shop.prices.slice(0, 3).map(p => `
-            <tr>
-              <td>${p.item} ${p.season ? '<span class="season-tag"><i class="fas fa-leaf"></i>时令</span>' : ''}</td>
-              <td>${p.price} <span class="price-unit">${p.unit}</span></td>
-            </tr>
-          `).join('')}
-          ${shop.prices.length > 3 ? `<tr><td colspan="2" style="text-align:center;color:var(--text-muted);font-size:12px;">共 ${shop.prices.length} 个品种，点击查看全部</td></tr>` : ''}
-        </tbody>
-      </table>
-    </div>
-  `).join('');
-}
-
-function openShopDetail(shopId) {
-  const shop = marketData.shops.find(s => s.id === shopId);
-  if (!shop) return;
-  const zone = marketData.zones.find(z => z.id === shop.zone);
-
-  const html = `
-    <div class="modal-handle"></div>
-    <div class="modal-body">
-      <div class="modal-shop-name">
-        ${shop.name}
-        ${shop.featured ? '<span class="shop-badge badge-feature">特色商户</span>' : ''}
-      </div>
-      <div class="modal-shop-stall">
-        <i class="fas fa-map-pin" style="color:var(--green)"></i>
-        ${zone.name} · ${shop.stall}
-      </div>
-      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">${shop.desc}</p>
-
-      <div class="modal-section-title"><i class="fas fa-tag"></i> 经营品类</div>
-      <div class="shop-tags">${shop.tags.map(t => `<span class="shop-tag">${t}</span>`).join('')}</div>
-
-      <div class="modal-section-title"><i class="fas fa-receipt"></i> 参考价格</div>
-      <table class="modal-price-full">
-        <thead><tr><th>品名</th><th>参考价格</th></tr></thead>
-        <tbody>
-          ${shop.prices.map(p => `
-            <tr>
-              <td>${p.item} ${p.season ? '<span class="season-tag"><i class="fas fa-leaf"></i>时令</span>' : ''}</td>
-              <td>${p.price} <span class="price-unit">${p.unit}</span></td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-
-      <div class="modal-section-title"><i class="fas fa-info-circle"></i> 温馨提示</div>
-      <ul class="modal-feature-list">
-        <li><i class="fas fa-check-circle"></i> 以上价格为参考价，实际以摊位标价为准</li>
-        <li><i class="fas fa-check-circle"></i> 批量采购可询价，部分商户支持议价</li>
-        <li><i class="fas fa-check-circle"></i> 如遇价格纠纷可至服务台咨询</li>
-      </ul>
-    </div>
-  `;
-
-  document.getElementById('modalContent').innerHTML = html;
-  document.getElementById('modal').classList.add('active');
-}
-
-function closeModal(e) {
-  if (e.target === document.getElementById('modal')) {
-    document.getElementById('modal').classList.remove('active');
-  }
-}
-
-function renderMapGrid() {
-  const container = document.getElementById('mapGrid');
-  container.innerHTML = marketData.zones.map(z => `
-    <button class="map-zone" style="background:${z.bgColor};color:${z.color};"
-            onclick="goToZone('${z.id}')">
-      <div class="mz-icon">${z.icon}</div>
-      <div class="mz-name">${z.name}</div>
-      <div class="mz-count">${z.location} · ${z.count}家</div>
-    </button>
-  `).join('');
-}
-
-function goToZone(zoneId) {
-  currentZone = zoneId;
-  switchPage('pageHome');
-  setTimeout(() => {
-    renderZoneTabs();
-    renderShopList();
-    document.getElementById('zoneTabs').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 100);
-}
-
-function renderPricePage() {
-  const container = document.getElementById('priceContent');
-  let html = '';
-
-  marketData.zones.forEach(zone => {
-    const shops = marketData.shops.filter(s => s.zone === zone.id);
-    html += `
-      <div class="section-title" style="margin-top:16px;">
-        <h2 style="color:${zone.color}">${zone.icon} ${zone.name}</h2>
-      </div>
-    `;
-    shops.forEach(shop => {
-      html += `
-        <div class="shop-card" style="margin-bottom:10px;" onclick="openShopDetail(${shop.id})">
-          <div class="shop-card-header">
-            <div class="shop-card-left">
-              <div class="shop-name" style="font-size:14px;">${shop.name} 
-                ${shop.featured ? '<span class="shop-badge badge-feature" style="font-size:9px;">特色</span>' : ''}
-              </div>
-              <div class="shop-stall"><i class="fas fa-map-pin"></i> ${shop.stall}</div>
-            </div>
-          </div>
-          <table class="price-table">
-            <thead><tr><th>品名</th><th>参考价</th></tr></thead>
-            <tbody>
-              ${shop.prices.map(p => `
-                <tr>
-                  <td>${p.item} ${p.season ? '<span class="season-tag"><i class="fas fa-leaf"></i>时令</span>' : ''}</td>
-                  <td>${p.price} <span class="price-unit">${p.unit}</span></td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      `;
+function uploadFileToBmob(fileObj){
+    return new Promise(function(resolve,reject){
+        var bf=new Bmob.File(fileObj.name||'file.jpg',fileObj);
+        bf.save({
+            success:function(obj){
+                var url='';
+                if(typeof obj.url==='function')url=obj.url();
+                else if(obj._url)url=obj._url;
+                else if(obj.url&&typeof obj.url==='string')url=obj.url;
+                else if(Array.isArray(obj)&&obj[0]){
+                    url=typeof obj[0].url==='function'?obj[0].url():(obj[0].url||obj[0]._url||'');
+                }
+                resolve(url);
+            },
+            error:function(err){reject(err);}
+        });
     });
-  });
-
-  html += `
-    <div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:12px;">
-      <i class="fas fa-info-circle"></i> 价格每日更新，仅供参考，以实际标价为准
-    </div>
-  `;
-
-  container.innerHTML = html;
 }
 
-function handleSearch(val) {
-  const clearBtn = document.getElementById('clearBtn');
-  clearBtn.classList.toggle('show', val.length > 0);
+function compressToBlob(f,mw){return new Promise(function(r,j){var rd=new FileReader();rd.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas');var w=img.width,h=img.height;if(w>mw){h=Math.round(h*mw/w);w=mw;}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);c.toBlob(function(b){r(b);},'image/jpeg',0.7);};img.onerror=function(){j('fail');};img.src=e.target.result;};rd.onerror=function(){j('fail');};rd.readAsDataURL(f);});}
 
-  if (val.trim().length === 0) {
-    closeSearch();
-    return;
-  }
+// ========== Bmob 数据操作层 ==========
+function shopToJSON(bObj){return{objectId:bObj.id,zone:bObj.get('zone'),name:bObj.get('name'),stall:bObj.get('stall'),featured:bObj.get('featured')||false,isNew:bObj.get('isNew')||false,tags:bObj.get('tags')||[],desc:bObj.get('desc')||'',prices:bObj.get('prices')||[],orderNum:bObj.get('orderNum')||0};}
 
-  const keyword = val.trim().toLowerCase();
-  const results = [];
+function recordToJSON(bObj){return{objectId:bObj.id,name:bObj.get('name'),phone:bObj.get('phone'),stall:bObj.get('stall'),type:bObj.get('type'),description:bObj.get('description'),images:bObj.get('images')||[],status:bObj.get('status')||'pending',createTime:bObj.createdAt?new Date(bObj.createdAt).toLocaleString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}):''};}
 
-  marketData.shops.forEach(shop => {
-    const zone = marketData.zones.find(z => z.id === shop.zone);
-    if (shop.name.toLowerCase().includes(keyword)) {
-      results.push({ type: 'shop', shop, zone, matchField: '商户名' });
-      return;
-    }
-    if (shop.stall.toLowerCase().includes(keyword)) {
-      results.push({ type: 'shop', shop, zone, matchField: '摊位号' });
-      return;
-    }
-    if (shop.tags.some(t => t.includes(keyword))) {
-      results.push({ type: 'shop', shop, zone, matchField: '品类' });
-      return;
-    }
-    shop.prices.forEach(p => {
-      if (p.item.includes(keyword)) {
-        results.push({ type: 'item', shop, zone, price: p, matchField: '菜品' });
-      }
-    });
-  });
+async function getShops(){var q=new Bmob.Query(Shop);q.limit(1000);q.ascending('orderNum');var results=await bmobFind(q);return results.map(shopToJSON);}
+async function getRecords(){var q=new Bmob.Query(Record);q.limit(1000);q.descending('createdAt');var results=await bmobFind(q);return results.map(recordToJSON);}
 
-  const seen = new Set();
-  const unique = results.filter(r => {
-    const key = r.type === 'shop' ? `shop-${r.shop.id}` : `item-${r.shop.id}-${r.price.item}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+async function getSetting(key){var q=new Bmob.Query(Setting);q.equalTo('key',key);q.limit(1);var results=await bmobFind(q);if(results.length>0)return{objectId:results[0].id,key:results[0].get('key'),value:results[0].get('value')};return null;}
+async function saveSetting(key,value){var existing=await getSetting(key);if(existing){var obj=Bmob.Object.createWithoutData('Setting',existing.objectId);obj.set('value',value);return bmobSave(obj);}else{var obj=new Setting();return bmobSave(obj,{key:key,value:value});}}
+async function removeSetting(key){var existing=await getSetting(key);if(existing){var obj=Bmob.Object.createWithoutData('Setting',existing.objectId);return new Promise(function(r,j){obj.destroy({success:r,error:function(o,e){j(e);}});});}}
 
-  const panel = document.getElementById('searchPanel');
-  const listEl = document.getElementById('searchResults');
-  const titleEl = document.getElementById('searchTitle');
+async function getMapUrl(floor){var s=await getSetting('mapImage_'+floor);return s?s.value:'';}
+async function saveMapUrl(floor,url){await saveSetting('mapImage_'+floor,url);}
+async function removeMapUrl(floor){await removeSetting('mapImage_'+floor);}
+async function getAdminPwd(){var s=await getSetting('adminPwd');return s?s.value:'888888';}
 
-  titleEl.textContent = `搜索"${val}" · ${unique.length}个结果`;
-  panel.classList.add('active');
+async function seedShops(){var seeded=await getSetting('shopsSeeded');if(seeded&&seeded.value==='true')return;for(var i=0;i<defaultShops.length;i++){var s=defaultShops[i];var obj=new Shop();await bmobSave(obj,{zone:s.zone,name:s.name,stall:s.stall,featured:s.featured,isNew:s.isNew,tags:s.tags,desc:s.desc,prices:s.prices,orderNum:i+1});}await saveSetting('shopsSeeded','true');}
 
-  if (unique.length === 0) {
-    listEl.innerHTML = `
-      <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
-        <i class="fas fa-search" style="font-size:32px;margin-bottom:12px;display:block;opacity:0.3;"></i>
-        <p>未找到相关结果</p>
-        <p style="font-size:12px;margin-top:4px;">试试其他关键词，如"草莓""A-03""卤味"</p>
-      </div>
-    `;
-    return;
-  }
+function refreshShopsCache(){return getShops().then(function(s){shopsCache=s;});}
+function getZoneCount(zid){return shopsCache.filter(function(s){return s.zone===zid;}).length;}
+function updateStatusTime(){var d=new Date();document.querySelectorAll('.sb-time').forEach(function(el){el.textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');});}
+setInterval(updateStatusTime,30000);
 
-  listEl.innerHTML = unique.map(r => {
-    if (r.type === 'shop') {
-      return `
-        <div class="search-result-item" onclick="closeSearch();openShopDetail(${r.shop.id})">
-          <div class="sr-name">${highlightText(r.shop.name, keyword)} <span style="font-size:11px;color:var(--text-muted);font-weight:400;">· ${r.matchField}</span></div>
-          <div class="sr-meta">
-            <span><i class="fas fa-map-pin"></i> ${r.zone.name} ${r.shop.stall}</span>
-            <span>${r.shop.tags.join(' / ')}</span>
-          </div>
-        </div>
-      `;
-    } else {
-      return `
-        <div class="search-result-item" onclick="closeSearch();openShopDetail(${r.shop.id})">
-          <div class="sr-name">${highlightText(r.price.item, keyword)} <span style="font-size:13px;font-weight:700;color:var(--orange);">${r.price.price}${r.price.unit}</span></div>
-          <div class="sr-meta">
-            <span>${r.shop.name}</span>
-            <span><i class="fas fa-map-pin"></i> ${r.zone.name} ${r.shop.stall}</span>
-          </div>
-        </div>
-      `;
-    }
-  }).join('');
-}
+// ========== 地图交互 ==========
+var mapScale=1,mapLastScale=1,mapTransX=0,mapTransY=0,mapIsDragging=false,mapStartX=0,mapStartY=0,mapLastDist=0;
+function initMapInteraction(){var w=document.getElementById('mapImgWrapper');w.addEventListener('touchstart',function(e){if(e.touches.length===1){mapIsDragging=true;mapStartX=e.touches[0].clientX-mapTransX;mapStartY=e.touches[0].clientY-mapTransY;}else if(e.touches.length===2){mapIsDragging=false;mapLastDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);mapLastScale=mapScale;}},{passive:true});w.addEventListener('touchmove',function(e){if(e.touches.length===1&&mapIsDragging){mapTransX=e.touches[0].clientX-mapStartX;mapTransY=e.touches[0].clientY-mapStartY;applyMapTransform();}else if(e.touches.length===2){var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);mapScale=Math.min(5,Math.max(1,mapLastScale*(d/mapLastDist)));applyMapTransform();}},{passive:true});w.addEventListener('touchend',function(){mapIsDragging=false;});var lt=0;w.addEventListener('touchend',function(){var n=Date.now();if(n-lt<300){mapScale=Math.min(5,mapScale>=3?1:mapScale+1);applyMapTransform();}lt=n;});}
+function applyMapTransform(){document.getElementById('mapImg').style.transform='translate('+mapTransX+'px,'+mapTransY+'px) scale('+mapScale+')';}
+function mapZoomIn(){mapScale=Math.min(5,mapScale+0.5);applyMapTransform();}
+function mapZoomOut(){mapScale=Math.max(1,mapScale-0.5);applyMapTransform();}
+function mapZoomReset(){mapScale=1;mapTransX=0;mapTransY=0;applyMapTransform();}
+function renderFloorTabs(){document.getElementById('floorTabs').innerHTML=FLOORS.map(function(f){return'<button class="floor-tab '+(mapFloor===f.id?'active':'')+'" onclick="switchFloor('+f.id+')">'+f.label+'<div class="ft-sub">'+f.desc+'</div></button>';}).join('');}
+function switchFloor(f){mapFloor=f;mapZoomReset();renderFloorTabs();loadMarketMap();}
 
-function highlightText(text, keyword) {
-  const idx = text.toLowerCase().indexOf(keyword.toLowerCase());
-  if (idx === -1) return text;
-  return text.slice(0, idx) + '<mark>' + text.slice(idx, idx + keyword.length) + '</mark>' + text.slice(idx + keyword.length);
-}
+async function loadMarketMap(){var url=await getMapUrl(mapFloor);var img=document.getElementById('mapImg'),ph=document.getElementById('mapPlaceholder');if(url){img.src=url;img.style.display='block';ph.style.display='none';}else{img.src='';img.style.display='none';ph.style.display='flex';}mapZoomReset();}
 
-function closeSearch() {
-  document.getElementById('searchPanel').classList.remove('active');
-}
+async function handleMapUpload(e){var f=e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')){showToast('请选择图片文件');e.target.value='';return;}if(f.size>20*1024*1024){showToast('图片不能超过20MB');e.target.value='';return;}showToast('正在上传...');try{var blob=await compressToBlob(f,1600);var cf=new File([blob],'map_floor_'+uploadingFloor+'_'+Date.now()+'.jpg',{type:'image/jpeg'});var url=await uploadFileToBmob(cf);if(!url){showToast('上传失败');e.target.value='';return;}await saveMapUrl(uploadingFloor,url);if(mapFloor===uploadingFloor)await loadMarketMap();if(adminAuthenticated)renderAdminTab();showToast(FLOORS.find(function(fl){return fl.id===uploadingFloor;}).label+'地图上传成功');}catch(err){showToast('上传失败');console.error(err);}e.target.value='';}
 
-function clearSearch() {
-  document.getElementById('searchInput').value = '';
-  document.getElementById('clearBtn').classList.remove('show');
-  closeSearch();
-}
+async function adminRemoveMap(floor){if(!confirm('确认删除'+FLOORS.find(function(f){return f.id===floor;}).label+'地图？'))return;await removeMapUrl(floor);if(mapFloor===floor)await loadMarketMap();renderAdminTab();showToast('地图已删除');}
 
-function switchPage(pageId) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(pageId).classList.add('active');
+// ========== 初始化 ==========
+async function init(){try{await seedShops();await refreshShopsCache();updateStatusTime();renderZoneTabs();renderShopList();renderMapGrid();renderFloorTabs();await loadMarketMap();initMapInteraction();renderPriceTabs();renderPriceContent();renderStallOptions();initDescCounter();renderMyRecords();}catch(err){console.error('初始化失败:',err);showToast('连接云端失败，请刷新重试');}document.getElementById('loadingOverlay').classList.add('hidden');}
 
-  document.querySelectorAll('.nav-item').forEach(n => {
-    n.classList.toggle('active', n.dataset.page === pageId);
-  });
+// ========== 首页 ==========
+function renderZoneTabs(){document.getElementById('zoneTabs').innerHTML=defaultZones.map(function(z){return'<button class="zone-tab '+(z.id===currentZone?'active':'')+'" onclick="selectZone(\''+z.id+'\')">'+z.icon+' '+z.name+'</button>';}).join('');}
+function selectZone(id){currentZone=id;renderZoneTabs();renderShopList();}
 
-  window.scrollTo(0, 0);
-}
+function renderShopList(){var ss=shopsCache.filter(function(s){return s.zone===currentZone;});document.getElementById('shopList').innerHTML=ss.length?ss.map(function(s,i){return'<div class="shop-card '+(s.featured?'featured':'')+' fade-in" style="animation-delay:'+i*0.06+'s" onclick="openShopDetail(\''+s.objectId+'\')"><div class="shop-card-header"><div class="shop-card-left"><div class="shop-name">'+s.name+(s.featured?'<span class="shop-badge badge-feature">特色</span>':'')+(s.isNew?'<span class="shop-badge badge-new">新入驻</span>':'')+'</div><div class="shop-stall"><i class="fas fa-map-pin"></i> '+s.stall+'</div></div><div class="shop-card-right"><i class="fas fa-chevron-right"></i></div></div><div class="shop-tags">'+s.tags.map(function(t){return'<span class="shop-tag">'+t+'</span>';}).join('')+'</div><table class="price-table"><thead><tr><th>品名</th><th>参考价</th></tr></thead><tbody>'+s.prices.slice(0,3).map(function(p){return'<tr><td>'+p.item+(p.season?'<span class="season-tag"><i class="fas fa-leaf"></i>时令</span>':'')+'</td><td>'+p.price+'<span class="price-unit">'+p.unit+'</span></td></tr>';}).join('')+(s.prices.length>3?'<tr><td colspan="2" style="text-align:center;color:var(--text-muted);font-size:12px;">共 '+s.prices.length+' 个品种，点击查看全部</td></tr>':'')+'</tbody></table></div>';}).join(''):'<div class="admin-empty" style="padding:40px 0;"><i class="fas fa-store-slash"></i><p>该区域暂无店铺</p></div>';}
 
-function navTo(el) {
-  const pageId = el.dataset.page;
-  switchPage(pageId);
-}
+function openShopDetail(oid){var s=shopsCache.find(function(x){return x.objectId===oid;});if(!s)return;var z=defaultZones.find(function(x){return x.id===s.zone;});document.getElementById('modalContent').innerHTML='<div class="modal-handle"></div><div class="modal-body"><div class="modal-shop-name">'+s.name+(s.featured?'<span class="shop-badge badge-feature">特色商户</span>':'')+'</div><div class="modal-shop-stall"><i class="fas fa-map-pin" style="color:var(--green)"></i> '+(z?z.name:'')+' · '+s.stall+'</div><p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;line-height:1.6;">'+s.desc+'</p><div class="modal-section-title"><i class="fas fa-tag"></i> 经营品类</div><div class="shop-tags">'+s.tags.map(function(t){return'<span class="shop-tag">'+t+'</span>';}).join('')+'</div><div class="modal-section-title"><i class="fas fa-receipt"></i> 参考价格</div><table class="modal-price-full"><thead><tr><th>品名</th><th>参考价格</th></tr></thead><tbody>'+s.prices.map(function(p){return'<tr><td>'+p.item+(p.season?'<span class="season-tag"><i class="fas fa-leaf"></i>时令</span>':'')+'</td><td>'+p.price+'<span class="price-unit">'+p.unit+'</span></td></tr>';}).join('')+'</tbody></table><div class="modal-section-title"><i class="fas fa-info-circle"></i> 温馨提示</div><ul class="modal-feature-list"><li><i class="fas fa-check-circle"></i> 以上价格为参考价，实际以摊位标价为准</li><li><i class="fas fa-check-circle"></i> 批量采购可询价，部分商户支持议价</li><li><i class="fas fa-check-circle"></i> 如遇价格纠纷可至服务台咨询</li></ul></div>';document.getElementById('modal').classList.add('active');}
 
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2000);
-}
+function closeModal(e){if(e.target===document.getElementById('modal'))document.getElementById('modal').classList.remove('active');}
+function renderMapGrid(){document.getElementById('mapGrid').innerHTML=defaultZones.map(function(z){return'<button class="map-zone" style="background:'+z.bgColor+';color:'+z.color+';" onclick="goToZone(\''+z.id+'\')"><div class="mz-icon">'+z.icon+'</div><div class="mz-name">'+z.name+'</div><div class="mz-count">'+z.location+' · '+getZoneCount(z.id)+'家</div></button>';}).join('');}
+function goToZone(id){currentZone=id;switchPage('pageHome');setTimeout(function(){renderZoneTabs();renderShopList();document.getElementById('zoneTabs').scrollIntoView({behavior:'smooth',block:'center'});},100);}
 
-init();
-</script>
-</body>
-</html>
+// ========== 价格页 ==========
+function renderPriceTabs(){document.getElementById('priceTabs').innerHTML='<button class="price-tab '+(priceZone==='all'?'active':'')+'" onclick="priceZone=\'all\';renderPriceTabs();renderPriceContent();">全部</button>'+defaultZones.map(function(z){return'<button class="price-tab '+(priceZone===z.id?'active':'')+'" onclick="priceZone=\''+z.id+'\';renderPriceTabs();renderPriceContent();">'+z.icon+' '+z.name+'</button>';}).join('');}
+
+function renderPriceContent(){var c=document.getElementById('priceContent');var zones=priceZone==='all'?defaultZones:defaultZones.filter(function(z){return z.id===priceZone;});var h='';zones.forEach(function(z){var ss=shopsCache.filter(function(s){return s.zone===z.id;});if(!ss.length)return;h+='<div class="price-zone-card fade-in" style="border-left-color:'+z.color+';"><div class="price-zone-header"><span class="pz-icon">'+z.icon+'</span><span class="pz-name" style="color:'+z.color+';">'+z.name+'</span><span class="pz-count">'+ss.length+'家店铺</span></div>';ss.forEach(function(s){h+='<div class="price-shop-row" onclick="openShopDetail(\''+s.objectId+'\')"><div class="psr-name">'+s.name+(s.featured?'<span class="shop-badge badge-feature" style="font-size:9px;">特色</span>':'')+'<span class="psr-stall">'+s.stall+'</span></div><table><thead><tr><th>品名</th><th>参考价</th></tr></thead><tbody>'+s.prices.map(function(p){return'<tr><td>'+p.item+(p.season?' <span class="season-tag"><i class="fas fa-leaf"></i>时令</span>':'')+'</td><td>'+p.price+'<span class="price-unit"> '+p.unit+'</span></td></tr>';}).join('')+'</tbody></table></div>';});h+='</div>';});if(!h)h='<div class="admin-empty" style="padding:40px 0;"><i class="fas fa-store-slash"></i><p>该区域暂无店铺</p></div>';c.innerHTML=h;}
+
+// ========== 搜索 ==========
+function handleSearch(val){document.getElementById('clearBtn').classList.toggle('show',val.length>0);if(val.trim().length===0){closeSearch();return;}var kw=val.trim().toLowerCase(),results=[];shopsCache.forEach(function(s){var z=defaultZones.find(function(x){return x.id===s.zone;});if(s.name.toLowerCase().includes(kw)){results.push({type:'shop',shop:s,zone:z,mf:'商户名'});return;}if(s.stall.toLowerCase().includes(kw)){results.push({type:'shop',shop:s,zone:z,mf:'摊位号'});return;}if(s.tags.some(function(t){return t.includes(kw);})){results.push({type:'shop',shop:s,zone:z,mf:'品类'});return;}s.prices.forEach(function(p){if(p.item.includes(kw))results.push({type:'item',shop:s,zone:z,price:p,mf:'菜品'});});});var seen=new Set(),uq=results.filter(function(r){var k=r.type==='shop'?'s'+r.shop.objectId:'i'+r.shop.objectId+r.price.item;if(seen.has(k))return false;seen.add(k);return true;});document.getElementById('searchTitle').textContent='搜索"'+val+'" · '+uq.length+'个结果';document.getElementById('searchPanel').classList.add('active');if(!uq.length){document.getElementById('searchResults').innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--text-muted);"><i class="fas fa-search" style="font-size:36px;margin-bottom:14px;display:block;opacity:0.2;"></i><p style="font-weight:500;">未找到相关结果</p></div>';return;}document.getElementById('searchResults').innerHTML=uq.map(function(r){if(r.type==='shop')return'<div class="search-result-item" onclick="closeSearch();openShopDetail(\''+r.shop.objectId+'\')"><div class="sr-name">'+hl(r.shop.name,kw)+' <span style="font-size:11px;color:var(--text-muted);font-weight:400;">· '+r.mf+'</span></div><div class="sr-meta"><span><i class="fas fa-map-pin"></i> '+(r.zone?r.zone.name:'')+' '+r.shop.stall+'</span><span>'+r.shop.tags.join(' / ')+'</span></div></div>';return'<div class="search-result-item" onclick="closeSearch();openShopDetail(\''+r.shop.objectId+'\')"><div class="sr-name">'+hl(r.price.item,kw)+' <span style="font-size:13px;font-weight:700;color:var(--orange);">'+r.price.price+r.price.unit+'</span></div><div class="sr-meta"><span>'+r.shop.name+'</span><span><i class="fas fa-map-pin"></i> '+(r.zone?r.zone.name:'')+' '+r.shop.stall+'</span></div></div>';}).join('');}
+function hl(t,kw){var i=t.toLowerCase().indexOf(kw.toLowerCase());return i===-1?t:t.slice(0,i)+'<mark>'+t.slice(i,i+kw.length)+'</mark>'+t.slice(i+kw.length);}
+function closeSearch(){document.getElementById('searchPanel').classList.remove('active');}
+function clearSearch(){document.getElementById('searchInput').value='';document.getElementById('clearBtn').classList.remove('show');closeSearch();}
+
+// ========== 页面切换 ==========
+async function switchPage(pid){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.getElementById(pid).classList.add('active');document.querySelectorAll('.nav-item').forEach(function(n){n.classList.toggle('active',n.dataset.page===pid);});window.scrollTo(0,0);if(pid==='pageAfterSale')renderMyRecords();if(pid==='pageMap'){renderFloorTabs();await loadMarketMap();}if(pid==='pagePrice'){renderPriceTabs();renderPriceContent();}if(pid==='pageHome'){await refreshShopsCache();renderZoneTabs();renderShopList();renderMapGrid();renderPriceTabs();renderPriceContent();}}
+function navTo(el){switchPage(el.dataset.page);}
+function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+function viewImage(s){document.getElementById('imgViewerImg').src=s;document.getElementById('imgViewer').classList.add('active');}
+function maskPhone(p){return(!p||p.length<7)?p:p.substring(0,3)+'****'+p.substring(7);}
+function buildImgHtml(images,cls){if(!images||!images.length)return'';return'<div class="'+cls+'">'+images.map(function(url){return'<img src="'+url+'" alt="图片" onclick="event.stopPropagation();viewImage(this.src)">';}).join('')+'</div>';}
+
+// ========== 售后 ==========
+async function handleImgSelect(e){var fs=e.target.files;if(!fs||!fs.length)return;var rm=MAX_IMAGES-pendingImageUrls.length;if(rm<=0){showToast('最多上传'+MAX_IMAGES+'张图片');e.target.value='';return;}showToast('正在上传图片...');for(var i=0;i<Math.min(fs.length,rm);i++){var file=fs[i];if(!file.type.startsWith('image/'))continue;if(file.size>10*1024*1024){showToast('图片不能超过10MB');continue;}try{var blob=await compressToBlob(file,800);var cf=new File([blob],'as_'+Date.now()+'_'+i+'.jpg',{type:'image/jpeg'});var url=await uploadFileToBmob(cf);if(url)pendingImageUrls.push(url);else showToast('第'+(i+1)+'张上传失败');}catch(err){console.error('图片上传失败:',err);showToast('图片上传失败');}}renderImagePreviews();showToast('图片上传完成');e.target.value='';}
+
+function renderImagePreviews(){var a=document.getElementById('imgUploadArea'),b=document.getElementById('imgUploadBtn');a.querySelectorAll('.img-preview-item').forEach(function(el){el.remove();});b.style.display=pendingImageUrls.length>=MAX_IMAGES?'none':'flex';pendingImageUrls.forEach(function(url,i){var d=document.createElement('div');d.className='img-preview-item';d.innerHTML='<img src="'+url+'" alt="预览"><button class="img-del-btn" onclick="removePendingImage('+i+')"><i class="fas fa-times"></i></button>';a.insertBefore(d,b);});}
+function removePendingImage(i){pendingImageUrls.splice(i,1);renderImagePreviews();}
+
+function renderStallOptions(){var sel=document.getElementById('asStall');sel.innerHTML='<option value="">请选择摊位（可选）</option>';defaultZones.forEach(function(z){var og=document.createElement('optgroup');og.label=z.icon+' '+z.name;shopsCache.filter(function(s){return s.zone===z.id;}).forEach(function(s){var o=document.createElement('option');o.value=s.stall+' '+s.name;o.textContent=s.stall+' '+s.name;og.appendChild(o);});sel.appendChild(og);});}
+function initDescCounter(){document.getElementById('asDesc').addEventListener('input',function(){document.getElementById('asDescCount').textContent=this.value.length;});}
+
+async function submitAfterSale(){var n=document.getElementById('asName').value.trim(),ph=document.getElementById('asPhone').value.trim(),st=document.getElementById('asStall').value,ty=document.getElementById('asType').value,ds=document.getElementById('asDesc').value.trim();if(!ph){showToast('请输入联系电话');return;}if(!/^1[3-9]\d{9}$/.test(ph)){showToast('请输入正确的手机号码');return;}if(!ty){showToast('请选择问题类型');return;}if(!ds){showToast('请填写问题描述');return;}if(ds.length<5){showToast('问题描述至少5个字');return;}showToast('正在提交...');try{var obj=new Record();await bmobSave(obj,{name:n||'未填写',phone:ph,stall:st||'未选择',type:ty,description:ds,images:pendingImageUrls.slice(),status:'pending'});document.getElementById('asName').value='';document.getElementById('asPhone').value='';document.getElementById('asStall').value='';document.getElementById('asType').value='';document.getElementById('asDesc').value='';document.getElementById('asDescCount').textContent='0';pendingImageUrls=[];renderImagePreviews();showToast('反馈提交成功');renderMyRecords();}catch(err){showToast('提交失败，请重试');console.error(err);}}
+
+async function renderMyRecords(){var c=document.getElementById('myRecordsList'),recs;try{recs=await getRecords();}catch(e){c.innerHTML='<div class="admin-empty"><i class="fas fa-exclamation-circle"></i><p>加载失败，请检查网络</p></div>';return;}if(!recs.length){c.innerHTML='<div class="admin-empty"><i class="fas fa-inbox"></i><p>暂无反馈记录</p></div>';return;}var sm={pending:{l:'待处理',c:'status-pending'},processing:{l:'处理中',c:'status-processing'},done:{l:'已完成',c:'status-done'}};c.innerHTML=recs.map(function(r){var s=sm[r.status]||sm.pending;return'<div class="record-item"><div class="record-item-header"><span class="record-item-type">'+r.type+' <span class="status-badge '+s.c+'">'+s.l+'</span></span><span class="record-item-time">'+r.createTime+'</span></div>'+buildImgHtml(r.images,'record-images')+'<div class="record-item-desc">'+r.description+'</div><div class="record-item-contact"><i class="fas fa-phone-alt"></i> '+maskPhone(r.phone)+(r.stall!=='未选择'?' · '+r.stall:'')+'</div></div>';}).join('');}
+
+// ========== 管理面板 ==========
+function openAdminLogin(){adminAuthenticated=false;adminTab='records';adminFilterStatus='all';adminShopZoneFilter='all';renderAdminPanel();document.getElementById('adminOverlay').classList.add('active');}
+
+async function renderAdminPanel(){var p=document.getElementById('adminPanel');if(!adminAuthenticated){p.innerHTML='<div class="admin-panel-header"><h3><i class="fas fa-shield-alt"></i> 管理员验证</h3><button class="admin-close-btn" onclick="document.getElementById(\'adminOverlay\').classList.remove(\'active\')"><i class="fas fa-times"></i></button></div><div class="admin-login"><div style="width:60px;height:60px;border-radius:16px;background:var(--red-light);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><i class="fas fa-lock" style="font-size:24px;color:var(--red);"></i></div><p style="font-weight:600;color:var(--text);font-size:15px;margin-bottom:4px;">管理员登录</p><p>请输入密码以访问后台</p><input type="password" class="form-input" id="adminPwdInput" placeholder="请输入密码" onkeydown="if(event.key===\'Enter\')adminLogin()"><button class="submit-btn" style="margin-top:16px;" onclick="adminLogin()"><i class="fas fa-sign-in-alt"></i> 验证登录</button><p style="font-size:11px;color:var(--text-muted);margin-top:16px;">默认密码：888888</p></div>';setTimeout(function(){var i=document.getElementById('adminPwdInput');if(i)i.focus();},200);return;}var recs=await getRecords();var pc=recs.filter(function(r){return r.status==='pending';}).length;p.innerHTML='<div class="admin-panel-header"><h3><i class="fas fa-shield-alt"></i> 管理后台</h3><button class="admin-close-btn" onclick="document.getElementById(\'adminOverlay\').classList.remove(\'active\')"><i class="fas fa-times"></i></button></div><div class="admin-tabs"><button class="admin-tab '+(adminTab==='records'?'active':'')+'" onclick="adminTab=\'records\';renderAdminTab()"><i class="fas fa-clipboard-list"></i>售后'+(pc?'<span class="tab-badge">'+pc+'</span>':'')+'</button><button class="admin-tab '+(adminTab==='shops'?'active':'')+'" onclick="adminTab=\'shops\';renderAdminTab()"><i class="fas fa-store"></i>店铺</button><button class="admin-tab '+(adminTab==='map'?'active':'')+'" onclick="adminTab=\'map\';renderAdminTab()"><i class="fas fa-map"></i>地图</button></div><div class="admin-tab-body" id="adminTabBody"></div>';renderAdminTab();}
+
+async function renderAdminTab(){var body=document.getElementById('adminTabBody');if(!body)return;if(adminTab==='records')await renderRecordsTab(body);else if(adminTab==='shops')await renderShopsTab(body);else if(adminTab==='map')await renderMapTab(body);document.querySelectorAll('.admin-tab').forEach(function(t,i){var tabs=['records','shops','map'];t.classList.toggle('active',tabs[i]===adminTab);});}
+
+async function renderRecordsTab(body){var recs=await getRecords();var fl=adminFilterStatus==='all'?recs:recs.filter(function(r){return r.status===adminFilterStatus;});var pc=recs.filter(function(r){return r.status==='pending';}).length,prc=recs.filter(function(r){return r.status==='processing';}).length,dc=recs.filter(function(r){return r.status==='done';}).length;var sm={pending:{l:'待处理',c:'status-pending'},processing:{l:'处理中',c:'status-processing'},done:{l:'已完成',c:'status-done'}};body.innerHTML='<div style="padding:16px;"><div class="admin-stat"><div class="admin-stat-item" style="background:var(--yellow-light);color:var(--yellow);"><span class="stat-num">'+pc+'</span>待处理</div><div class="admin-stat-item" style="background:var(--blue-light);color:var(--blue);"><span class="stat-num">'+prc+'</span>处理中</div><div class="admin-stat-item" style="background:var(--green-light);color:var(--green);"><span class="stat-num">'+dc+'</span>已完成</div></div><div class="admin-filter-bar"><button class="admin-filter-btn '+(adminFilterStatus==='all'?'active':'')+'" onclick="adminFilterStatus=\'all\';renderAdminTab()">全部('+recs.length+')</button><button class="admin-filter-btn '+(adminFilterStatus==='pending'?'active':'')+'" onclick="adminFilterStatus=\'pending\';renderAdminTab()">待处理</button><button class="admin-filter-btn '+(adminFilterStatus==='processing'?'active':'')+'" onclick="adminFilterStatus=\'processing\';renderAdminTab()">处理中</button><button class="admin-filter-btn '+(adminFilterStatus==='done'?'active':'')+'" onclick="adminFilterStatus=\'done\';renderAdminTab()">已完成</button></div></div><div style="padding:0 16px;">'+(fl.length===0?'<div class="admin-empty"><i class="fas fa-check-circle"></i><p>暂无记录</p></div>':fl.map(function(r){var s=sm[r.status]||sm.pending;return'<div class="admin-record"><div class="admin-record-top"><div class="admin-record-info"><div class="ari-type">'+r.type+' <span class="status-badge '+s.c+'">'+s.l+'</span></div><div class="ari-time">'+r.createTime+'</div></div></div><div class="admin-record-desc">'+r.description+'</div>'+buildImgHtml(r.images,'admin-record-images')+'<div class="admin-record-contact"><i class="fas fa-user"></i> '+r.name+' &nbsp;<i class="fas fa-phone-alt"></i> '+r.phone+'</div><div class="admin-record-stall"><i class="fas fa-map-pin"></i> '+r.stall+'</div><div class="admin-record-actions">'+(r.status!=='processing'?'<button class="admin-action-btn" onclick="updateRecSt(\''+r.objectId+'\',\'processing\')"><i class="fas fa-spinner"></i> 处理中</button>':'')+(r.status!=='done'?'<button class="admin-action-btn btn-primary" onclick="updateRecSt(\''+r.objectId+'\',\'done\')"><i class="fas fa-check"></i> 已完成</button>':'')+(r.status==='pending'?'<button class="admin-action-btn btn-danger" onclick="delRec(\''+r.objectId+'\')"><i class="fas fa-trash-alt"></i> 删除</button>':'')+'</div></div>';}).join(''))+'</div>';}
+
+async function renderShopsTab(body){var shopsHtml='';var filtered=adminShopZoneFilter==='all'?shopsCache:shopsCache.filter(function(s){return s.zone===adminShopZoneFilter;});var zoneBar='<div class="zone-filter-bar"><button class="zone-filter-btn '+(adminShopZoneFilter==='all'?'active':'')+'" onclick="adminShopZoneFilter=\'all\';renderAdminTab()">全部('+shopsCache.length+')</button>';defaultZones.forEach(function(z){var c=shopsCache.filter(function(s){return s.zone===z.id;}).length;zoneBar+='<button class="zone-filter-btn '+(adminShopZoneFilter===z.id?'active':'')+'" onclick="adminShopZoneFilter=\''+z.id+'\';renderAdminTab()">'+z.icon+z.name+'('+c+')</button>';});zoneBar+='</div>';if(!filtered.length){shopsHtml='<div class="admin-empty"><i class="fas fa-store-slash"></i><p>暂无店铺</p></div>';}else{filtered.forEach(function(s){shopsHtml+='<div class="admin-shop-item"><div class="asi-info"><div class="asi-name">'+s.name+(s.featured?' <span class="shop-badge badge-feature" style="font-size:9px;">特色</span>':'')+(s.isNew?' <span class="shop-badge badge-new" style="font-size:9px;">新</span>':'')+'</div><div class="asi-meta">'+s.stall+' · '+s.prices.length+'种</div></div><div class="asi-actions"><button onclick="openShopForm(\''+s.objectId+'\')" title="编辑"><i class="fas fa-pen" style="color:var(--blue);"></i></button><button onclick="deleteShop(\''+s.objectId+'\')" title="删除"><i class="fas fa-trash" style="color:var(--red);"></i></button></div></div>';});}body.innerHTML='<div style="padding:16px;"><button class="submit-btn" style="margin-bottom:16px;" onclick="openShopForm(\'\')"><i class="fas fa-plus"></i> 添加新店铺</button>'+zoneBar+'</div><div style="padding:0 16px;">'+shopsHtml+'</div>';}
+
+async function renderMapTab(body){var floorsHtml='';for(var fi=0;fi<FLOORS.length;fi++){var f=FLOORS[fi];var url=await getMapUrl(f.id),hasMap=!!url;var prev='';if(hasMap)prev='<div class="admin-map-preview"><img src="'+url+'" alt="预览"></div>';floorsHtml+='<div class="admin-map-floor"><h4><i class="fas fa-layer-group"></i> '+f.label+' · '+f.desc+'</h4><div class="amf-status">状态：'+(hasMap?'<span style="color:var(--green);">已上传</span>':'<span style="color:var(--yellow);">未上传</span>')+'</div>'+prev+'<div class="amf-actions"><button class="admin-action-btn btn-primary" style="flex:1;padding:10px;" onclick="uploadingFloor='+f.id+';document.getElementById(\'adminMapFileInput\').click()"><i class="fas fa-upload"></i> '+(hasMap?'更换':'上传')+'</button>'+(hasMap?'<button class="admin-action-btn btn-danger" style="padding:10px 14px;" onclick="adminRemoveMap('+f.id+')"><i class="fas fa-trash-alt"></i></button>':'')+'</div></div>';}body.innerHTML='<div style="padding:16px;">'+floorsHtml+'<div style="font-size:12px;color:var(--text-muted);line-height:2;padding:4px 0;"><p><i class="fas fa-check-circle" style="color:var(--green);margin-right:4px;"></i>市场共两层，请分别上传各楼层地图</p><p><i class="fas fa-check-circle" style="color:var(--green);margin-right:4px;"></i>支持 JPG / PNG，最大 20MB，自动压缩</p><p><i class="fas fa-check-circle" style="color:var(--green);margin-right:4px;"></i>数据存储于 Bmob 云端，多设备同步</p></div></div>';}
+
+async function adminLogin(){if(document.getElementById('adminPwdInput').value===await getAdminPwd()){adminAuthenticated=true;adminTab='records';adminFilterStatus='all';adminShopZoneFilter='all';await refreshShopsCache();renderAdminPanel();}else showToast('密码错误');}
+
+async function updateRecSt(objectId,st){var obj=Bmob.Object.createWithoutData('Record',objectId);obj.set('status',st);await bmobSave(obj);renderAdminTab();renderMyRecords();showToast('状态已更新');}
+async function delRec(objectId){if(!confirm('确认删除？'))return;var obj=Bmob.Object.createWithoutData('Record',objectId);await new Promise(function(r,j){obj.destroy({success:r,error:function(o,e){j(e);}});});renderAdminTab();renderMyRecords();showToast('已删除');}
+
+// ========== 店铺管理 ==========
+function openShopForm(editId){var isEdit=!!editId;var shop=isEdit?shopsCache.find(function(s){return s.objectId===editId;}):null;var zoneOpts=defaultZones.map(function(z){return'<option value="'+z.id+'"'+((shop&&shop.zone===z.id)?' selected':'')+'>'+z.icon+' '+z.name+'</option>';}).join('');var pricesHtml='';var prices=isEdit&&shop?shop.prices:[{item:'',price:'',unit:'元/斤'}];prices.forEach(function(p){pricesHtml+='<div class="price-row"><input type="text" placeholder="品名" value="'+p.item+'" class="pri-item"><input type="text" placeholder="价格" value="'+p.price+'" class="pri-price"><input type="text" placeholder="单位" value="'+p.unit+'" class="pri-unit" style="width:70px;flex:none;"><button class="pr-del" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button></div>';});document.getElementById('shopFormContent').innerHTML='<div class="modal-handle"></div><div class="modal-body"><div class="modal-shop-name">'+(isEdit?'编辑店铺':'添加新店铺')+'</div><div class="form-group"><label>所属区域 <span class="required">*</span></label><select class="form-input" id="sfZone">'+zoneOpts+'</select></div><div class="form-group"><label>店铺名称 <span class="required">*</span></label><input type="text" class="form-input" id="sfName" placeholder="如：老李蔬菜行" value="'+(isEdit?shop.name:'')+'"></div><div class="form-group"><label>摊位号 <span class="required">*</span></label><input type="text" class="form-input" id="sfStall" placeholder="如：A-03" value="'+(isEdit?shop.stall:'')+'"></div><div class="form-group"><label>描述</label><textarea class="form-input" id="sfDesc" placeholder="店铺
+简介...">'+(isEdit?shop.desc:'')+'</textarea></div><div class="checkbox-row"><label class 
