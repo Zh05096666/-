@@ -6,8 +6,6 @@
 <title>新葡萄农贸市场 · 采购指南</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<!-- 引入Bmob SDK -->
-<script src="https://cdn.jsdelivr.net/npm/bmob-js-sdk@2.6.0/dist/bmob.min.js"></script>
 <style>
 :root{--green:#2D8B4E;--green-light:#E8F5EC;--green-dark:#1B6B38;--green-gradient:linear-gradient(135deg,#2D8B4E 0%,#1B6B38 100%);--orange:#E8793A;--orange-light:#FFF3EB;--orange-gradient:linear-gradient(135deg,#E8793A 0%,#D4602A 100%);--bg:#F5F5F0;--card:#FFFFFF;--text:#1A1A1A;--text-secondary:#6B7280;--text-muted:#9CA3AF;--border:#E5E5E0;--shadow:0 2px 12px rgba(0,0,0,0.06);--shadow-md:0 4px 20px rgba(0,0,0,0.08);--shadow-lg:0 8px 32px rgba(0,0,0,0.12);--radius:14px;--radius-lg:20px;--red:#DC2626;--red-light:#FEE2E2;--yellow:#D97706;--yellow-light:#FEF3C7;--blue:#2563EB;--blue-light:#DBEAFE;--transition:0.25s cubic-bezier(0.4,0,0.2,1)}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -156,7 +154,6 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csv
 textarea.form-input{height:88px;padding:12px 14px;resize:vertical;line-height:1.6}
 .submit-btn{width:100%;height:50px;border:none;border-radius:14px;background:var(--green-gradient);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity 0.2s,transform 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 16px rgba(45,139,78,0.3)}
 .submit-btn:active{transform:scale(0.97);opacity:0.9}
-.submit-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
 .record-item{padding:16px 0;border-bottom:1px solid var(--border)}
 .record-item:last-child{border-bottom:none}
 .record-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
@@ -296,12 +293,9 @@ textarea.form-input{height:88px;padding:12px 14px;resize:vertical;line-height:1.
 .zone-filter-bar{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
 .zone-filter-btn{flex-shrink:0;padding:5px 12px;border-radius:16px;font-size:11px;border:1.5px solid var(--border);background:#fff;color:var(--text-secondary);cursor:pointer;font-family:inherit;font-weight:500;transition:all 0.2s}
 .zone-filter-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
-/* 加载中样式 */
-.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.8);display:flex;align-items:center;justify-content:center;z-index:999}
 </style>
 </head>
 <body>
-<div class="loading-overlay" id="loadingOverlay"><div style="text-align:center;"><i class="fas fa-spinner fa-spin" style="font-size:36px;color:var(--green);margin-bottom:10px;display:block;"></i><p style="font-size:14px;color:var(--text-secondary);">数据加载中...</p></div></div>
 <div class="toast" id="toast"></div>
 <div class="img-viewer-overlay" id="imgViewer" onclick="this.classList.remove('active')"><img id="imgViewerImg" src="" alt="查看大图"></div>
 <div class="search-results" id="searchPanel"><div class="search-results-header"><button onclick="closeSearch()"><i class="fas fa-arrow-left"></i></button><span id="searchTitle">搜索结果</span></div><div class="search-results-list" id="searchResults"></div></div>
@@ -356,7 +350,7 @@ textarea.form-input{height:88px;padding:12px 14px;resize:vertical;line-height:1.
       <div class="form-group"><label>问题类型 <span class="required">*</span></label><select class="form-input" id="asType"><option value="">请选择问题类型</option><option value="商品质量">商品质量</option><option value="短斤少两">短斤少两</option><option value="价格争议">价格争议</option><option value="服务态度">服务态度</option><option value="食品卫生">食品卫生</option><option value="退换货">退换货</option><option value="其他问题">其他问题</option></select></div>
       <div class="form-group"><label>问题描述 <span class="required">*</span></label><textarea class="form-input" id="asDesc" placeholder="请详细描述您遇到的问题..." maxlength="500"></textarea><div style="text-align:right;font-size:11px;color:var(--text-muted);margin-top:4px;"><span id="asDescCount">0</span>/500</div></div>
       <div class="form-group"><label>上传图片 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">（最多3张，可选）</span></label><div class="img-upload-area" id="imgUploadArea"><div class="img-upload-btn" id="imgUploadBtn" onclick="document.getElementById('imgFileInput').click()"><i class="fas fa-camera"></i><span>添加图片</span></div><input type="file" id="imgFileInput" accept="image/*" multiple style="display:none" onchange="handleImgSelect(event)"></div></div>
-      <button class="submit-btn" id="submitBtn" onclick="submitAfterSale()"><i class="fas fa-paper-plane"></i> 提交反馈</button>
+      <button class="submit-btn" onclick="submitAfterSale()"><i class="fas fa-paper-plane"></i> 提交反馈</button>
     </div>
     <div class="my-records-card fade-in" style="animation-delay:0.1s"><h3><i class="fas fa-history"></i> 我的反馈记录</h3><div id="myRecordsList"><div class="admin-empty"><i class="fas fa-spinner fa-spin"></i><p>加载中...</p></div></div></div>
     <div class="admin-entry"><button class="admin-entry-btn" onclick="openAdminLogin()"><i class="fas fa-cog"></i> 管理查看</button></div>
@@ -371,109 +365,102 @@ textarea.form-input{height:88px;padding:12px 14px;resize:vertical;line-height:1.
 </div>
 
 <script>
-// ===================== Bmob初始化（已填入你的密钥） =====================
-Bmob.initialize("59423e6c7cd551463dc8eb9766c6ad3f", "1d64b1148dcfec6012248961f8977642");
-
 const defaultZones=[{id:'veg',name:'蔬菜区',icon:'🥬',color:'#2D8B4E',bgColor:'#E8F5EC',location:'A区'},{id:'fruit',name:'水果区',icon:'🍎',color:'#DC2626',bgColor:'#FEE2E2',location:'B区'},{id:'meat',name:'肉禽区',icon:'🥩',color:'#9333EA',bgColor:'#F3E8FF',location:'C区'},{id:'seafood',name:'水产区',icon:'🐟',color:'#0891B2',bgColor:'#CFFAFE',location:'D区'},{id:'dry',name:'干货区',icon:'🫘',color:'#D97706',bgColor:'#FEF3C7',location:'E区'},{id:'deli',name:'熟食区',icon:'🍗',color:'#E8793A',bgColor:'#FFF3EB',location:'F区'}];
 const defaultShops=[{id:1,zone:'veg',name:'老李蔬菜行',stall:'A-03',featured:true,isNew:false,tags:['叶菜类','根茎类','时令鲜蔬'],desc:'经营15年老店，品种齐全，每日产地直供',prices:[{item:'小青菜',price:'3.5',unit:'元/斤'},{item:'西红柿',price:'4.0-5.0',unit:'元/斤'},{item:'土豆',price:'2.5',unit:'元/斤'},{item:'黄瓜',price:'3.0',unit:'元/斤'},{item:'茼蒿',price:'5.0',unit:'元/斤',season:true}]},{id:2,zone:'veg',name:'绿野菜铺',stall:'A-07',featured:false,isNew:true,tags:['有机蔬菜','沙拉菜','进口菜'],desc:'主打有机和进口蔬菜，品质上乘',prices:[{item:'有机生菜',price:'8.0',unit:'元/斤'},{item:'羽衣甘蓝',price:'12.0',unit:'元/斤'},{item:'芝麻菜',price:'10.0',unit:'元/斤'},{item:'罗马生菜',price:'7.0',unit:'元/斤'}]},{id:3,zone:'veg',name:'张记菜摊',stall:'A-11',featured:false,isNew:false,tags:['家常菜','豆制品','菌菇'],desc:'家常蔬菜和豆制品，经济实惠',prices:[{item:'大白菜',price:'1.5',unit:'元/斤'},{item:'老豆腐',price:'3.0',unit:'元/块'},{item:'金针菇',price:'4.0',unit:'元/袋'},{item:'香菇',price:'8.0',unit:'元/斤'}]},{id:4,zone:'fruit',name:'鲜果坊',stall:'B-02',featured:true,isNew:false,tags:['时令水果','进口水果','果切'],desc:'品种最全的水果行，支持果切定制',prices:[{item:'红富士苹果',price:'5.0-7.0',unit:'元/斤'},{item:'云南香蕉',price:'3.5',unit:'元/斤'},{item:'丹东草莓',price:'25.0',unit:'元/斤',season:true},{item:'车厘子',price:'45.0-65.0',unit:'元/斤'}]},{id:5,zone:'fruit',name:'果真鲜',stall:'B-05',featured:false,isNew:false,tags:['国产水果','礼盒装','批发'],desc:'十斤起享批发价，礼盒定制',prices:[{item:'赣南脐橙',price:'4.5',unit:'元/斤'},{item:'砂糖橘',price:'5.0',unit:'元/斤',season:true},{item:'麒麟西瓜',price:'3.0',unit:'元/斤'}]},{id:6,zone:'meat',name:'金锣冷鲜',stall:'C-01',featured:true,isNew:false,tags:['猪肉','牛肉','品质保障'],desc:'冷链直供，检验检疫齐全',prices:[{item:'五花肉',price:'18.0',unit:'元/斤'},{item:'里脊肉',price:'22.0',unit:'元/斤'},{item:'牛腱子',price:'42.0',unit:'元/斤'},{item:'排骨',price:'28.0',unit:'元/斤'}]},{id:7,zone:'meat',name:'禽旺家禽',stall:'C-04',featured:false,isNew:false,tags:['土鸡','老鸭','鲜活禽'],desc:'现杀现卖，活禽可挑选',prices:[{item:'土鸡',price:'28.0',unit:'元/斤'},{item:'老鸭',price:'25.0',unit:'元/斤'},{item:'鸽子',price:'35.0',unit:'元/只'}]},{id:8,zone:'seafood',name:'海之鲜',stall:'D-02',featured:true,isNew:false,tags:['活海鲜','贝类','虾蟹'],desc:'日进两批，活鲜保证',prices:[{item:'基围虾',price:'38.0',unit:'元/斤'},{item:'大闸蟹',price:'55.0-88.0',unit:'元/斤',season:true},{item:'花甲',price:'12.0',unit:'元/斤'},{item:'鲈鱼',price:'18.0',unit:'元/斤'}]},{id:9,zone:'seafood',name:'渔人码头',stall:'D-05',featured:false,isNew:true,tags:['淡水鱼','鱼丸','加工'],desc:'支持杀鱼去鳞，鱼丸现做',prices:[{item:'草鱼',price:'10.0',unit:'元/斤'},{item:'鲫鱼',price:'12.0',unit:'元/斤'},{item:'手工鱼丸',price:'22.0',unit:'元/斤'}]},{id:10,zone:'dry',name:'百味干货',stall:'E-01',featured:true,isNew:false,tags:['调料','干菌','杂粮'],desc:'一站购齐调味料和干货',prices:[{item:'八角',price:'35.0',unit:'元/斤'},{item:'黑木耳',price:'40.0',unit:'元/斤'},{item:'黄花菜',price:'25.0',unit:'元/斤'},{item:'绿豆',price:'6.0',unit:'元/斤'}]},{id:11,zone:'dry',name:'福源坚果',stall:'E-04',featured:false,isNew:false,tags:['坚果','果干','零食'],desc:'坚果果干品种丰富，可试吃',prices:[{item:'核桃',price:'20.0',unit:'元/斤'},{item:'葡萄干',price:'15.0',unit:'元/斤'},{item:'腰果',price:'38.0',unit:'元/斤'}]},{id:12,zone:'deli',name:'卤大厨',stall:'F-01',featured:true,isNew:false,tags:['卤味','凉菜','现卤现卖'],desc:'祖传卤方，每日现卤',prices:[{item:'卤牛肉',price:'58.0',unit:'元/斤'},{item:'卤鸭脖',price:'28.0',unit:'元/斤'},{item:'凉拌海带',price:'12.0',unit:'元/斤'},{item:'卤鸡蛋',price:'2.0',unit:'元/个'}]},{id:13,zone:'deli',name:'香酥记',stall:'F-03',featured:false,isNew:false,tags:['炸鸡','烤鸭','熟食'],desc:'现烤现炸，外酥里嫩',prices:[{item:'烤鸭',price:'32.0',unit:'元/只'},{item:'炸鸡腿',price:'6.0',unit:'元/个'},{item:'盐水鸭',price:'38.0',unit:'元/斤'}]}];
 
-let currentZone='veg',priceZone='all',mapFloor=1,adminAuthenticated=false,adminFilterStatus='all',adminShopZoneFilter='all',adminTab='records',pendingBlobs=[],shopsCache=[],activeUrls=[],uploadingFloor=1;
-const MAX_IMAGES=3,FLOORS=[{id:1,label:'1F',desc:'蔬菜·水果·干货'},{id:2,label:'2F',desc:'肉禽·水产·熟食'}],ADMIN_PASSWORD='123456'; // 管理员密码可以在这里改
+let currentZone='veg',priceZone='all',mapFloor=1,adminAuthenticated=false,adminFilterStatus='all',adminShopZoneFilter='all',adminTab='records',pendingBlobs=[],shopsCache=[],mapUrl='',activeUrls=[],uploadingFloor=1;
+const MAX_IMAGES=3,FLOORS=[{id:1,label:'1F',desc:'蔬菜·水果·干货'},{id:2,label:'2F',desc:'肉禽·水产·熟食'}];
 
-// ===================== Bmob数据操作函数 =====================
-// 上传文件到Bmob
-async function uploadFile(file, name) {
-  try {
-    const fileObj = Bmob.File(name, file);
-    await fileObj.save();
-    return fileObj.url();
-  } catch (error) {
-    console.error('文件上传失败:', error);
-    throw error;
-  }
-}
+// ========== IndexedDB ==========
+let db=null;const DB_NAME='XinPutaoMarketDB',DB_VERSION=3;
+function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,DB_VERSION);r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('records'))d.createObjectStore('records',{keyPath:'id'});if(!d.objectStoreNames.contains('shops'))d.createObjectStore('shops',{keyPath:'id'});if(!d.objectStoreNames.contains('settings'))d.createObjectStore('settings',{keyPath:'key'});};r.onsuccess=e=>{db=e.target.result;resolve(db);};r.onerror=e=>reject(e.target.error);});}
+function dbPut(s,d){return new Promise((r,j)=>{const q=db.transaction(s,'readwrite').objectStore(s).put(d);q.onsuccess=()=>r();q.onerror=e=>j(e.target.error);});}
+function dbGet(s,k){return new Promise((r,j)=>{const q=db.transaction(s,'readonly').objectStore(s).get(k);q.onsuccess=()=>r(q.result);q.onerror=e=>j(e.target.error);});}
+function dbGetAll(s){return new Promise((r,j)=>{const q=db.transaction(s,'readonly').objectStore(s).getAll();q.onsuccess=()=>r(q.result);q.onerror=e=>j(e.target.error);});}
+function dbDel(s,k){return new Promise((r,j)=>{const q=db.transaction(s,'readwrite').objectStore(s).delete(k);q.onsuccess=()=>r();q.onerror=e=>j(e.target.error);});}
+function makeUrl(b){if(!b)return'';if(!(b instanceof Blob))return b;const u=URL.createObjectURL(b);activeUrls.push(u);return u;}
+function revokeAll(){activeUrls.forEach(u=>URL.revokeObjectURL(u));activeUrls=[];}
+function compressToBlob(f,mw){return new Promise((r,j)=>{const rd=new FileReader();rd.onload=e=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>mw){h=Math.round(h*mw/w);w=mw;}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);c.toBlob(b=>r(b),'image/jpeg',0.7);};img.onerror=()=>j('fail');img.src=e.target.result;};rd.onerror=()=>j('fail');rd.readAsDataURL(f);});}
+async function getShops(){const all=await dbGetAll('shops');return all.sort((a,b)=>a.id-b.id);}
+async function getRecords(){const all=await dbGetAll('records');return all.sort((a,b)=>b.id-a.id);}
+async function getMapBlob(floor){const s=await dbGet('settings','mapImage_'+floor);return s?s.value:null;}
+async function saveMapBlob(floor,b){await dbPut('settings',{key:'mapImage_'+floor,value:b});}
+async function removeMapBlob(floor){await dbDel('settings','mapImage_'+floor);}
+async function getAdminPwd(){const s=await dbGet('settings','adminPwd');return s?s.value:'888888';}
+async function seedShops(){const existing=await dbGetAll('shops');if(existing.length===0){for(const s of defaultShops)await dbPut('shops',s);}}
+function refreshShopsCache(){return getShops().then(s=>{shopsCache=s;});}
+function getZoneCount(zid){return shopsCache.filter(s=>s.zone===zid).length;}
+function updateStatusTime(){const d=new Date();document.querySelectorAll('.sb-time').forEach(el=>el.textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));}
+setInterval(updateStatusTime,30000);
 
-// 批量上传图片
-async function uploadImages(files) {
-  const urls = [];
-  for (const file of files) {
-    if (file.size > 0) {
-      const url = await uploadFile(file, `img_${Date.now()}_${Math.random().toString(36).substr(2,9)}`);
-      urls.push(url);
-    }
-  }
-  return urls;
-}
+// ===== 地图 =====
+let mapScale=1,mapLastScale=1,mapTransX=0,mapTransY=0,mapIsDragging=false,mapStartX=0,mapStartY=0,mapLastDist=0;
+function initMapInteraction(){const w=document.getElementById('mapImgWrapper');w.addEventListener('touchstart',e=>{if(e.touches.length===1){mapIsDragging=true;mapStartX=e.touches[0].clientX-mapTransX;mapStartY=e.touches[0].clientY-mapTransY;}else if(e.touches.length===2){mapIsDragging=false;mapLastDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);mapLastScale=mapScale;}},{passive:true});w.addEventListener('touchmove',e=>{if(e.touches.length===1&&mapIsDragging){mapTransX=e.touches[0].clientX-mapStartX;mapTransY=e.touches[0].clientY-mapStartY;applyMapTransform();}else if(e.touches.length===2){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);mapScale=Math.min(5,Math.max(1,mapLastScale*(d/mapLastDist)));applyMapTransform();}},{passive:true});w.addEventListener('touchend',()=>{mapIsDragging=false;});let lt=0;w.addEventListener('touchend',()=>{const n=Date.now();if(n-lt<300){mapScale=Math.min(5,mapScale>=3?1:mapScale+1);applyMapTransform();}lt=n;});}
+function applyMapTransform(){document.getElementById('mapImg').style.transform='translate('+mapTransX+'px,'+mapTransY+'px) scale('+mapScale+')';}
+function mapZoomIn(){mapScale=Math.min(5,mapScale+0.5);applyMapTransform();}
+function mapZoomOut(){mapScale=Math.max(1,mapScale-0.5);applyMapTransform();}
+function mapZoomReset(){mapScale=1;mapTransX=0;mapTransY=0;applyMapTransform();}
+function renderFloorTabs(){document.getElementById('floorTabs').innerHTML=FLOORS.map(f=>'<button class="floor-tab '+(mapFloor===f.id?'active':'')+'" onclick="switchFloor('+f.id+')">'+f.label+'<div class="ft-sub">'+f.desc+'</div></button>').join('');}
+function switchFloor(f){mapFloor=f;mapZoomReset();renderFloorTabs();loadMarketMap();}
+async function loadMarketMap(){const blob=await getMapBlob(mapFloor);const img=document.getElementById('mapImg'),ph=document.getElementById('mapPlaceholder');if(mapUrl){URL.revokeObjectURL(mapUrl);mapUrl='';}if(blob){mapUrl=URL.createObjectURL(blob);img.src=mapUrl;img.style.display='block';ph.style.display='none';}else{img.src='';img.style.display='none';ph.style.display='flex';}mapZoomReset();}
+function handleMapUpload(e){const f=e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')){showToast('请选择图片文件');e.target.value='';return;}if(f.size>20*1024*1024){showToast('图片不能超过20MB');e.target.value='';return;}showToast('正在处理...');compressToBlob(f,1600).then(async blob=>{await saveMapBlob(uploadingFloor,blob);await loadMarketMap();if(adminAuthenticated)renderAdminTab();showToast(FLOORS.find(f=>f.id===uploadingFloor).label+'地图上传成功');}).catch(()=>showToast('处理失败'));e.target.value='';}
+async function adminRemoveMap(floor){if(!confirm('确认删除'+FLOORS.find(f=>f.id===floor).label+'地图？'))return;await removeMapBlob(floor);if(mapFloor===floor)await loadMarketMap();renderAdminTab();showToast('地图已删除');}
 
-// 获取所有店铺
-async function getShops() {
-  try {
-    const query = Bmob.Query('shops');
-    const results = await query.find();
-    return results.map(item => ({
-      id: item.objectId,
-      zone: item.zone,
-      name: item.name,
-      stall: item.stall,
-      featured: item.featured,
-      isNew: item.isNew,
-      tags: item.tags || [],
-      desc: item.desc,
-      prices: item.prices || []
-    }));
-  } catch (error) {
-    console.error('获取店铺失败:', error);
-    return [];
-  }
-}
+async function init(){await openDB();await seedShops();await refreshShopsCache();updateStatusTime();renderZoneTabs();renderShopList();renderMapGrid();renderFloorTabs();await loadMarketMap();initMapInteraction();renderPriceTabs();renderPriceContent();renderStallOptions();initDescCounter();renderMyRecords();}
 
-// 保存/更新店铺
-async function saveShop(shop) {
-  try {
-    const query = Bmob.Query('shops');
-    if (shop.id) {
-      query.set('id', shop.id);
-      await query.get();
-    }
-    query.set('zone', shop.zone);
-    query.set('name', shop.name);
-    query.set('stall', shop.stall);
-    query.set('featured', shop.featured);
-    query.set('isNew', shop.isNew);
-    query.set('tags', shop.tags);
-    query.set('desc', shop.desc);
-    query.set('prices', shop.prices);
-    const result = await query.save();
-    return result.objectId;
-  } catch (error) {
-    console.error('保存店铺失败:', error);
-    throw error;
-  }
-}
+// ===== 首页 =====
+function renderZoneTabs(){document.getElementById('zoneTabs').innerHTML=defaultZones.map(z=>'<button class="zone-tab '+(z.id===currentZone?'active':'')+'" onclick="selectZone(\''+z.id+'\')">'+z.icon+' '+z.name+'</button>').join('');}
+function selectZone(id){currentZone=id;renderZoneTabs();renderShopList();}
+function renderShopList(){const ss=shopsCache.filter(s=>s.zone===currentZone);document.getElementById('shopList').innerHTML=ss.length?ss.map((s,i)=>'<div class="shop-card '+(s.featured?'featured':'')+' fade-in" style="animation-delay:'+i*0.06+'s" onclick="openShopDetail('+s.id+')"><div class="shop-card-header"><div class="shop-card-left"><div class="shop-name">'+s.name+(s.featured?'<span class="shop-badge badge-feature">特色</span>':'')+(s.isNew?'<span class="shop-badge badge-new">新入驻</span>':'')+'</div><div class="shop-stall"><i class="fas fa-map-pin"></i> '+s.stall+'</div></div><div class="shop-card-right"><i class="fas fa-chevron-right"></i></div></div><div class="shop-tags">'+s.tags.map(t=>'<span class="shop-tag">'+t+'</span>').join('')+'</div><table class="price-table"><thead><tr><th>品名</th><th>参考价</th></tr></thead><tbody>'+s.prices.slice(0,3).map(p=>'<tr><td>'+p.item+(p.season?'<span class="season-tag"><i class="fas fa-leaf"></i>时令</span>':'')+'</td><td>'+p.price+'<span class="price-unit">'+p.unit+'</span></td></tr>').join('')+(s.prices.length>3?'<tr><td colspan="2" style="text-align:center;color:var(--text-muted);font-size:12px;">共 '+s.prices.length+' 个品种，点击查看全部</td></tr>':'')+'</tbody></table></div>').join(''):'<div class="admin-empty" style="padding:40px 0;"><i class="fas fa-store-slash"></i><p>该区域暂无店铺</p></div>';}
+function openShopDetail(id){const s=shopsCache.find(x=>x.id===id);if(!s)return;const z=defaultZones.find(x=>x.id===s.zone);document.getElementById('modalContent').innerHTML='<div class="modal-handle"></div><div class="modal-body"><div class="modal-shop-name">'+s.name+(s.featured?'<span class="shop-badge badge-feature">特色商户</span>':'')+'</div><div class="modal-shop-stall"><i class="fas fa-map-pin" style="color:var(--green)"></i> '+(z?z.name:'')+' · '+s.stall+'</div><p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;line-height:1.6;">'+s.desc+'</p><div class="modal-section-title"><i class="fas fa-tag"></i> 经营品类</div><div class="shop-tags">'+s.tags.map(t=>'<span class="shop-tag">'+t+'</span>').join('')+'</div><div class="modal-section-title"><i class="fas fa-receipt"></i> 参考价格</div><table class="modal-price-full"><thead><tr><th>品名</th><th>参考价格</th></tr></thead><tbody>'+s.prices.map(p=>'<tr><td>'+p.item+(p.season?'<span class="season-tag"><i class="fas fa-leaf"></i>时令</span>':'')+'</td><td>'+p.price+'<span class="price-unit">'+p.unit+'</span></td></tr>').join('')+'</tbody></table><div class="modal-section-title"><i class="fas fa-info-circle"></i> 温馨提示</div><ul class="modal-feature-list"><li><i class="fas fa-check-circle"></i> 以上价格为参考价，实际以摊位标价为准</li><li><i class="fas fa-check-circle"></i> 批量采购可询价，部分商户支持议价</li><li><i class="fas fa-check-circle"></i> 如遇价格纠纷可至服务台咨询</li></ul></div>';document.getElementById('modal').classList.add('active');}
+function closeModal(e){if(e.target===document.getElementById('modal'))document.getElementById('modal').classList.remove('active');}
+function renderMapGrid(){document.getElementById('mapGrid').innerHTML=defaultZones.map(z=>'<button class="map-zone" style="background:'+z.bgColor+';color:'+z.color+';" onclick="goToZone(\''+z.id+'\')"><div class="mz-icon">'+z.icon+'</div><div class="mz-name">'+z.name+'</div><div class="mz-count">'+z.location+' · '+getZoneCount(z.id)+'家</div></button>').join('');}
+function goToZone(id){currentZone=id;switchPage('pageHome');setTimeout(()=>{renderZoneTabs();renderShopList();document.getElementById('zoneTabs').scrollIntoView({behavior:'smooth',block:'center'});},100);}
 
-// 删除店铺
-async function deleteShop(id) {
-  try {
-    const query = Bmob.Query('shops');
-    query.set('id', id);
-    await query.destroy();
-  } catch (error) {
-    console.error('删除店铺失败:', error);
-    throw error;
-  }
-}
+// ===== 价格页 =====
+function renderPriceTabs(){document.getElementById('priceTabs').innerHTML='<button class="price-tab '+(priceZone==='all'?'active':'')+'" onclick="priceZone=\'all\';renderPriceTabs();renderPriceContent();">全部</button>'+defaultZones.map(z=>'<button class="price-tab '+(priceZone===z.id?'active':'')+'" onclick="priceZone=\''+z.id+'\';renderPriceTabs();renderPriceContent();">'+z.icon+' '+z.name+'</button>').join('');}
+function renderPriceContent(){const c=document.getElementById('priceContent');const zones=priceZone==='all'?defaultZones:defaultZones.filter(z=>z.id===priceZone);let h='';zones.forEach(z=>{const ss=shopsCache.filter(s=>s.zone===z.id);if(!ss.length)return;h+='<div class="price-zone-card fade-in" style="border-left-color:'+z.color+';"><div class="price-zone-header"><span class="pz-icon">'+z.icon+'</span><span class="pz-name" style="color:'+z.color+';">'+z.name+'</span><span class="pz-count">'+ss.length+'家店铺</span></div>';ss.forEach(s=>{h+='<div class="price-shop-row" onclick="openShopDetail('+s.id+')"><div class="psr-name">'+s.name+(s.featured?'<span class="shop-badge badge-feature" style="font-size:9px;">特色</span>':'')+'<span class="psr-stall">'+s.stall+'</span></div><table><thead><tr><th>品名</th><th>参考价</th></tr></thead><tbody>'+s.prices.map(p=>'<tr><td>'+p.item+(p.season?' <span class="season-tag"><i class="fas fa-leaf"></i>时令</span>':'')+'</td><td>'+p.price+'<span class="price-unit"> '+p.unit+'</span></td></tr>').join('')+'</tbody></table></div>';});h+='</div>';});if(!h)h='<div class="admin-empty" style="padding:40px 0;"><i class="fas fa-store-slash"></i><p>该区域暂无店铺</p></div>';c.innerHTML=h;}
 
-// 获取所有售后记录
-async function getRecords() {
-  try {
-    const query = Bmob.Query('records');
-    query.order('-createdAt');
-    const results = await query.find();
-    return results.map(item => ({
-      id: item.objectId,
-      name: item.name,
-      phone: item.phone,
-      stall: item.stall,
-      type: item.type,
-      description: item.description,
-      images: item
+function handleSearch(val){document.getElementById('clearBtn').classList.toggle('show',val.length>0);if(val.trim().length===0){closeSearch();return;}const kw=val.trim().toLowerCase(),results=[];shopsCache.forEach(s=>{const z=defaultZones.find(x=>x.id===s.zone);if(s.name.toLowerCase().includes(kw)){results.push({type:'shop',shop:s,zone:z,mf:'商户名'});return;}if(s.stall.toLowerCase().includes(kw)){results.push({type:'shop',shop:s,zone:z,mf:'摊位号'});return;}if(s.tags.some(t=>t.includes(kw))){results.push({type:'shop',shop:s,zone:z,mf:'品类'});return;}s.prices.forEach(p=>{if(p.item.includes(kw))results.push({type:'item',shop:s,zone:z,price:p,mf:'菜品'});});});const seen=new Set(),uq=results.filter(r=>{const k=r.type==='shop'?'s'+r.shop.id:'i'+r.shop.id+r.price.item;if(seen.has(k))return false;seen.add(k);return true;});document.getElementById('searchTitle').textContent='搜索"'+val+'" · '+uq.length+'个结果';document.getElementById('searchPanel').classList.add('active');if(!uq.length){document.getElementById('searchResults').innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--text-muted);"><i class="fas fa-search" style="font-size:36px;margin-bottom:14px;display:block;opacity:0.2;"></i><p style="font-weight:500;">未找到相关结果</p></div>';return;}document.getElementById('searchResults').innerHTML=uq.map(r=>{if(r.type==='shop')return'<div class="search-result-item" onclick="closeSearch();openShopDetail('+r.shop.id+')"><div class="sr-name">'+hl(r.shop.name,kw)+' <span style="font-size:11px;color:var(--text-muted);font-weight:400;">· '+r.mf+'</span></div><div class="sr-meta"><span><i class="fas fa-map-pin"></i> '+(r.zone?r.zone.name:'')+' '+r.shop.stall+'</span><span>'+r.shop.tags.join(' / ')+'</span></div></div>';return'<div class="search-result-item" onclick="closeSearch();openShopDetail('+r.shop.id+')"><div class="sr-name">'+hl(r.price.item,kw)+' <span style="font-size:13px;font-weight:700;color:var(--orange);">'+r.price.price+r.price.unit+'</span></div><div class="sr-meta"><span>'+r.shop.name+'</span><span><i class="fas fa-map-pin"></i> '+(r.zone?r.zone.name:'')+' '+r.shop.stall+'</span></div></div>';}).join('');}
+function hl(t,kw){const i=t.toLowerCase().indexOf(kw.toLowerCase());return i===-1?t:t.slice(0,i)+'<mark>'+t.slice(i,i+kw.length)+'</mark>'+t.slice(i+kw.length);}
+function closeSearch(){document.getElementById('searchPanel').classList.remove('active');}
+function clearSearch(){document.getElementById('searchInput').value='';document.getElementById('clearBtn').classList.remove('show');closeSearch();}
+async function switchPage(pid){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(pid).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.page===pid));window.scrollTo(0,0);if(pid==='pageAfterSale')renderMyRecords();if(pid==='pageMap'){renderFloorTabs();await loadMarketMap();}if(pid==='pagePrice'){renderPriceTabs();renderPriceContent();}if(pid==='pageHome'){await refreshShopsCache();renderZoneTabs();renderShopList();renderMapGrid();renderPriceTabs();renderPriceContent();}}
+function navTo(el){switchPage(el.dataset.page);}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+function viewImage(s){document.getElementById('imgViewerImg').src=s;document.getElementById('imgViewer').classList.add('active');}
+function maskPhone(p){return(!p||p.length<7)?p:p.substring(0,3)+'****'+p.substring(7);}
+
+// ===== 售后 =====
+function handleImgSelect(e){const fs=e.target.files;if(!fs||!fs.length)return;const rm=MAX_IMAGES-pendingBlobs.length;if(rm<=0){showToast('最多上传'+MAX_IMAGES+'张图片');e.target.value='';return;}Array.from(fs).slice(0,rm).forEach(f=>{if(!f.type.startsWith('image/'))return;if(f.size>10*1024*1024){showToast('图片不能超过10MB');return;}compressToBlob(f,800).then(blob=>{pendingBlobs.push(blob);renderImagePreviews();}).catch(()=>showToast('压缩失败'));});e.target.value='';}
+function renderImagePreviews(){const a=document.getElementById('imgUploadArea'),b=document.getElementById('imgUploadBtn');a.querySelectorAll('.img-preview-item').forEach(el=>el.remove());b.style.display=pendingBlobs.length>=MAX_IMAGES?'none':'flex';pendingBlobs.forEach((blob,i)=>{const d=document.createElement('div');d.className='img-preview-item';d.innerHTML='<img src="'+makeUrl(blob)+'" alt="预览"><button class="img-del-btn" onclick="removePendingImage('+i+')"><i class="fas fa-times"></i></button>';a.insertBefore(d,b);});}
+function removePendingImage(i){pendingBlobs.splice(i,1);revokeAll();renderImagePreviews();}
+function renderStallOptions(){const sel=document.getElementById('asStall');sel.innerHTML='<option value="">请选择摊位（可选）</option>';defaultZones.forEach(z=>{const og=document.createElement('optgroup');og.label=z.icon+' '+z.name;shopsCache.filter(s=>s.zone===z.id).forEach(s=>{const o=document.createElement('option');o.value=s.stall+' '+s.name;o.textContent=s.stall+' '+s.name;og.appendChild(o);});sel.appendChild(og);});}
+function initDescCounter(){document.getElementById('asDesc').addEventListener('input',function(){document.getElementById('asDescCount').textContent=this.value.length;});}
+async function submitAfterSale(){const n=document.getElementById('asName').value.trim(),ph=document.getElementById('asPhone').value.trim(),st=document.getElementById('asStall').value,ty=document.getElementById('asType').value,ds=document.getElementById('asDesc').value.trim();if(!ph){showToast('请输入联系电话');return;}if(!/^1[3-9]\d{9}$/.test(ph)){showToast('请输入正确的手机号码');return;}if(!ty){showToast('请选择问题类型');return;}if(!ds){showToast('请填写问题描述');return;}if(ds.length<5){showToast('问题描述至少5个字');return;}const rec={id:Date.now(),name:n||'未填写',phone:ph,stall:st||'未选择',type:ty,description:ds,images:pendingBlobs.slice(),status:'pending',createTime:new Date().toLocaleString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'})};await dbPut('records',rec);document.getElementById('asName').value='';document.getElementById('asPhone').value='';document.getElementById('asStall').value='';document.getElementById('asType').value='';document.getElementById('asDesc').value='';document.getElementById('asDescCount').textContent='0';pendingBlobs=[];revokeAll();renderImagePreviews();showToast('反馈提交成功');renderMyRecords();}
+function buildImgHtml(images,cls){if(!images||!images.length)return'';return'<div class="'+cls+'">'+images.map(b=>'<img src="'+makeUrl(b)+'" alt="图片" onclick="event.stopPropagation();viewImage(this.src)">').join('')+'</div>';}
+async function renderMyRecords(){revokeAll();const c=document.getElementById('myRecordsList'),recs=await getRecords();if(!recs.length){c.innerHTML='<div class="admin-empty"><i class="fas fa-inbox"></i><p>暂无反馈记录</p></div>';return;}const sm={pending:{l:'待处理',c:'status-pending'},processing:{l:'处理中',c:'status-processing'},done:{l:'已完成',c:'status-done'}};c.innerHTML=recs.map(r=>{const s=sm[r.status]||sm.pending;return'<div class="record-item"><div class="record-item-header"><span class="record-item-type">'+r.type+' <span class="status-badge '+s.c+'">'+s.l+'</span></span><span class="record-item-time">'+r.createTime+'</span></div>'+buildImgHtml(r.images,'record-images')+'<div class="record-item-desc">'+r.description+'</div><div class="record-item-contact"><i class="fas fa-phone-alt"></i> '+maskPhone(r.phone)+(r.stall!=='未选择'?' · '+r.stall:'')+'</div></div>';}).join('');}
+
+// ===== 管理面板 =====
+function openAdminLogin(){adminAuthenticated=false;adminTab='records';adminFilterStatus='all';adminShopZoneFilter='all';renderAdminPanel();document.getElementById('adminOverlay').classList.add('active');}
+async function renderAdminPanel(){const p=document.getElementById('adminPanel');if(!adminAuthenticated){p.innerHTML='<div class="admin-panel-header"><h3><i class="fas fa-shield-alt"></i> 管理员验证</h3><button class="admin-close-btn" onclick="document.getElementById(\'adminOverlay\').classList.remove(\'active\')"><i class="fas fa-times"></i></button></div><div class="admin-login"><div style="width:60px;height:60px;border-radius:16px;background:var(--red-light);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><i class="fas fa-lock" style="font-size:24px;color:var(--red);"></i></div><p style="font-weight:600;color:var(--text);font-size:15px;margin-bottom:4px;">管理员登录</p><p>请输入密码以访问后台</p><input type="password" class="form-input" id="adminPwdInput" placeholder="请输入密码" onkeydown="if(event.key===\'Enter\')adminLogin()"><button class="submit-btn" style="margin-top:16px;" onclick="adminLogin()"><i class="fas fa-sign-in-alt"></i> 验证登录</button><p style="font-size:11px;color:var(--text-muted);margin-top:16px;">默认密码：888888</p></div>';setTimeout(()=>{const i=document.getElementById('adminPwdInput');if(i)i.focus();},200);return;}
+const recs=await getRecords();const pc=recs.filter(r=>r.status==='pending').length;
+p.innerHTML='<div class="admin-panel-header"><h3><i class="fas fa-shield-alt"></i> 管理后台</h3><button class="admin-close-btn" onclick="document.getElementById(\'adminOverlay\').classList.remove(\'active\')"><i class="fas fa-times"></i></button></div><div class="admin-tabs"><button class="admin-tab '+(adminTab==='records'?'active':'')+'" onclick="adminTab=\'records\';renderAdminTab()"><i class="fas fa-clipboard-list"></i>售后'+(pc?'<span class="tab-badge">'+pc+'</span>':'')+'</button><button class="admin-tab '+(adminTab==='shops'?'active':'')+'" onclick="adminTab=\'shops\';renderAdminTab()"><i class="fas fa-store"></i>店铺</button><button class="admin-tab '+(adminTab==='map'?'active':'')+'" onclick="adminTab=\'map\';renderAdminTab()"><i class="fas fa-map"></i>地图</button></div><div class="admin-tab-body" id="adminTabBody"></div>';renderAdminTab();}
+async function renderAdminTab(){revokeAll();const body=document.getElementById('adminTabBody');if(!body)return;if(adminTab==='records')await renderRecordsTab(body);else if(adminTab==='shops')await renderShopsTab(body);else if(adminTab==='map')await renderMapTab(body);document.querySelectorAll('.admin-tab').forEach((t,i)=>{const tabs=['records','shops','map'];t.classList.toggle('active',tabs[i]===adminTab);});}
+async function renderRecordsTab(body){const recs=await getRecords();const fl=adminFilterStatus==='all'?recs:recs.filter(r=>r.status===adminFilterStatus);const pc=recs.filter(r=>r.status==='pending').length,prc=recs.filter(r=>r.status==='processing').length,dc=recs.filter(r=>r.status==='done').length;const sm={pending:{l:'待处理',c:'status-pending'},processing:{l:'处理中',c:'status-processing'},done:{l:'已完成',c:'status-done'}};body.innerHTML='<div style="padding:16px;"><div class="admin-stat"><div class="admin-stat-item" style="background:var(--yellow-light);color:var(--yellow);"><span class="stat-num">'+pc+'</span>待处理</div><div class="admin-stat-item" style="background:var(--blue-light);color:var(--blue);"><span class="stat-num">'+prc+'</span>处理中</div><div class="admin-stat-item" style="background:var(--green-light);color:var(--green);"><span class="stat-num">'+dc+'</span>已完成</div></div><div class="admin-filter-bar"><button class="admin-filter-btn '+(adminFilterStatus==='all'?'active':'')+'" onclick="adminFilterStatus=\'all\';renderAdminTab()">全部('+recs.length+')</button><button class="admin-filter-btn '+(adminFilterStatus==='pending'?'active':'')+'" onclick="adminFilterStatus=\'pending\';renderAdminTab()">待处理</button><button class="admin-filter-btn '+(adminFilterStatus==='processing'?'active':'')+'" onclick="adminFilterStatus=\'processing\';renderAdminTab()">处理中</button><button class="admin-filter-btn '+(adminFilterStatus==='done'?'active':'')+'" onclick="adminFilterStatus=\'done\';renderAdminTab()">已完成</button></div></div><div style="padding:0 16px;">'+(fl.length===0?'<div class="admin-empty"><i class="fas fa-check-circle"></i><p>暂无记录</p></div>':fl.map(r=>{const s=sm[r.status]||sm.pending;return'<div class="admin-record"><div class="admin-record-top"><div class="admin-record-info"><div class="ari-type">'+r.type+' <span class="status-badge '+s.c+'">'+s.l+'</span></div><div class="ari-time">'+r.createTime+'</div></div></div><div class="admin-record-desc">'+r.description+'</div>'+buildImgHtml(r.images,'admin-record-images')+'<div class="admin-record-contact"><i class="fas fa-user"></i> '+r.name+' &nbsp;<i class="fas fa-phone-alt"></i> '+r.phone+'</div><div class="admin-record-stall"><i class="fas fa-map-pin"></i> '+r.stall+'</div><div class="admin-record-actions">'+(r.status!=='processing'?'<button class="admin-action-btn" onclick="updateRecSt('+r.id+',\'processing\')"><i class="fas fa-spinner"></i> 处理中</button>':'')+(r.status!=='done'?'<button class="admin-action-btn btn-primary" onclick="updateRecSt('+r.id+',\'done\')"><i class="fas fa-check"></i> 已完成</button>':'')+(r.status==='pending'?'<button class="admin-action-btn btn-danger" onclick="delRec('+r.id+')"><i class="fas fa-trash-alt"></i> 删除</button>':'')+'</div></div>';}).join(''))+'</div>';}
+async function renderShopsTab(body){let shopsHtml='';const filtered=adminShopZoneFilter==='all'?shopsCache:shopsCache.filter(s=>s.zone===adminShopZoneFilter);let zoneBar='<div class="zone-filter-bar"><button class="zone-filter-btn '+(adminShopZoneFilter==='all'?'active':'')+'" onclick="adminShopZoneFilter=\'all\';renderAdminTab()">全部('+shopsCache.length+')</button>';defaultZones.forEach(z=>{const c=shopsCache.filter(s=>s.zone===z.id).length;zoneBar+='<button class="zone-filter-btn '+(adminShopZoneFilter===z.id?'active':'')+'" onclick="adminShopZoneFilter=\''+z.id+'\';renderAdminTab()">'+z.icon+z.name+'('+c+')</button>';});zoneBar+='</div>';if(!filtered.length){shopsHtml='<div class="admin-empty"><i class="fas fa-store-slash"></i><p>暂无店铺</p></div>';}else{filtered.forEach(s=>{shopsHtml+='<div class="admin-shop-item"><div class="asi-info"><div class="asi-name">'+s.name+(s.featured?' <span class="shop-badge badge-feature" style="font-size:9px;">特色</span>':'')+(s.isNew?' <span class="shop-badge badge-new" style="font-size:9px;">新</span>':'')+'</div><div class="asi-meta">'+s.stall+' · '+s.prices.length+'种</div></div><div class="asi-actions"><button onclick="openShopForm('+s.id+')" title="编辑"><i class="fas fa-pen" style="color:var(--blue);"></i></button><button onclick="deleteShop('+s.id+')" title="删除"><i class="fas fa-trash" style="color:var(--red);"></i></button></div></div>';});}body.innerHTML='<div style="padding:16px;"><button class="submit-btn" style="margin-bottom:16px;" onclick="openShopForm(0)"><i class="fas fa-plus"></i> 添加新店铺</button>'+zoneBar+'</div><div style="padding:0 16px;">'+shopsHtml+'</div>';}
+async function renderMapTab(body){let floorsHtml='';for(const f of FLOORS){const blob=await getMapBlob(f.id),hasMap=!!blob;let prev='';if(hasMap)prev='<div class="admin-map-preview"><img src="'+makeUrl(blob)+'" alt="预览"></div>';floorsHtml+='<div class="admin-map-floor"><h4><i class="fas fa-layer-group"></i> '+f.label+' · '+f.desc+'</h4><div class="amf-status">状态：'+(hasMap?'<span style="color:var(--green);">已上传</span>':'<span style="color:var(--yellow);">未上传</span>')+'</div>'+prev+'<div class="amf-actions"><button class="admin-action-btn btn-primary" style="flex:1;padding:10px;" onclick="uploadingFloor='+f.id+';document.getElementById(\'adminMapFileInput\').click()"><i class="fas fa-upload"></i> '+(hasMap?'更换':'上传')+'</button>'+(hasMap?'<button class="admin-action-btn btn-danger" style="padding:10px 14px;" onclick="adminRemoveMap('+f.id+')"><i class="fas fa-trash-alt"></i></button>':'')+'</div></div>';}body.innerHTML='<div style="padding:16px;">'+floorsHtml+'<div style="font-size:12px;color:var(--text-muted);line-height:2;padding:4px 0;"><p><i class="fas fa-check-circle" style="color:var(--green);margin-right:4px;"></i>市场共两层，请分别上传各楼层地图</p><p><i class="fas fa-check-circle" style="color:var(--green);margin-right:4px;"></i>支持 JPG / PNG，最大 20MB，自动压缩</p><p><i class="fas fa-check-circle" style="color:var(--green);margin-right:4px;"></i>存储于 IndexedDB，空间充足</p></div></div>';}
+async function adminLogin(){if(document.getElementById('adminPwdInput').value===await getAdminPwd()){adminAuthenticated=true;adminTab='records';adminFilterStatus='all';adminShopZoneFilter='all';await refreshShopsCache();renderAdminPanel();}else showToast('密码错误');}
+async function updateRecSt(id,st){const all=await getRecords();const r=all.find(x=>x.id===id);if(r){r.status=st;await dbPut('records',r);renderAdminTab();renderMyRecords();showToast('状态已更新');}}
+async function delRec(id){if(!confirm('确认删除？'))return;await dbDel('records',id);renderAdminTab();renderMyRecords();showToast('已删除');}
+
+// ===== 店铺管理 =====
+function openShopForm(editId){const isEdit=editId>0;const shop=isEdit?shopsCache.find(s=>s.id===editId):null;const zoneOpts=defaultZones.map(z=>'<option value="'+z.id+'"'+((shop&&shop.zone===z.id)?' selected':'')+'>'+z.icon+' '+z.name+'</option>').join('');let pricesHtml='';const prices=isEdit&&shop?shop.prices:[{item:'',price:'',unit:'元/斤'}];prices.forEach((p)=>{pricesHtml+='<div class="price-row"><input type="text" placeholder="品名" value="'+p.item+'" class="pri-item"><input type="text" placeholder="价格" value="'+p.price+'" class="pri-price"><input type="text" placeholder="单位" value="'+p.unit+'" class="pri-unit" style="width:70px;flex:none;"><button class="pr-del" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button></div>';});document.getElementById('shopFormContent').innerHTML='<div class="modal-handle"></div><div class="modal-body"><div class="modal-shop-name">'+(isEdit?'编辑店铺':'添加新店铺')+'</div><div class="form-group"><label>所属区域 <span class="required">*</span></label><select class="form-input" id="sfZone">'+zoneOpts+'</select></div><div class="form-group"><label>店铺名称 <span class="required">*</span></label><input type="text" class="form-input" id="sfName" placeholder="如：老李蔬菜行" value="'+(isEdit?shop.name:'')+'"></div><div class="form-group"><label>摊位号 <span class="required">*</span></label><input type="text" class="form-input" id="sfStall" placeholder="如：A-03" value="'+(isEdit?shop.stall:'')+'"></div><div class="form-group"><label>描述</label><textarea class="form-input" id="sfDesc" placeholder="店铺简介...">'+(isEdit?shop.desc:'')+'</textarea></div><div class="checkbox-row"><label class="checkbox-label"><input type="checkbox" id="sfFeatured" '+(isEdit&&shop.featured?'checked':'')+'> 特色店铺</label><label class="checkbox-label"><input type="checkbox" id="sfIsNew" '+(isEdit&&shop.isNew?'checked':'')+'> 新入驻</label></div><div class="form-group"><label>标签 <span style="font-size:11px;color:var(--text-muted);">（逗号分隔）</span></label><input type="text" class="form-input" id="sfTags" placeholder="如：叶菜类,根茎类" value="'+(isEdit?shop.tags.join(','):'')+'"></div><div class="form-group"><label>价格表</label><div id="sfPriceRows">'+pricesHtml+'</div><button class="add-price-btn" onclick="addPriceRow()"><i class="fas fa-plus"></i> 添加一行</button></div><button class="submit-btn" onclick="saveShop('+editId+')"><i class="fas fa-check"></i> '+(isEdit?'保存修改':'添加店铺')+'</button></div>';document.getElementById('shopFormModal').classList.add('active');}
+function addPriceRow(){const c=document.getElementById('sfPriceRows');const d=document.createElement('div');d.className='price-row';d.innerHTML='<input type="text" placeholder="品名" class="pri-item"><input type="text" placeholder="价格" class="pri-price"><input type="text" placeholder="单位" class="pri-unit" style="width:70px;flex:none;" value="元/斤"><button class="pr-del" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>';c.appendChild(d);}
+async function saveShop(editId){const zone=document.getElementById('sfZone').value,name=document.getElementById('sfName').value.trim(),stall=document.getElementById('sfStall').value.trim(),desc=document.getElementById('sfDesc').value.trim(),featured=document.getElementById('sfFeatured').checked,isNew=document.getElementById('sfIsNew').checked,tagsStr=document.getElementById('sfTags').value.trim();if(!name){showToast('请输入店铺名称');return;}if(!stall){showToast('请输入摊位号');return;}const tags=tagsStr?tagsStr.split(/[,，]/).map(t=>t.trim()).filter(Boolean):[];const rows=document.querySelectorAll('#sfPriceRows .price-row');const prices=[];rows.forEach(r=>{const item=r.querySelector('.pri-item').value.trim(),price=r.querySelector('.pri-price').value.trim(),unit=r.querySelector('.pri-unit').value.trim();if(item&&price)prices.push({item,price,unit:unit||'元/斤'});});const id=editId>0?editId:Date.now();await dbPut('shops',{id,zone,name,stall,featured,isNew,tags,desc,prices});await refreshShopsCache();document.getElementById('shopFormModal').classList.remove('active');renderZoneTabs();renderShopList();renderMapGrid();renderPriceTabs();renderPriceContent();renderStallOptions();if(adminAuthenticated)renderAdminTab();showToast(editId>0?'店铺已更新':'店铺已添加');}
+async function deleteShop(id){if(!confirm('确认删除该店铺？'))return;await dbDel('shops',id);await refreshShopsCache();renderZoneTabs();renderShopList();renderMapGrid();renderPriceTabs();renderPriceContent();renderStallOptions();if(adminAuthenticated)renderAdminTab();showToast('店铺已删除');}
+
+init();
+</script>
+</body>
+</html>
