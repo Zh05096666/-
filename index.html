@@ -238,6 +238,49 @@ body{
 .back-link:active{background:rgba(255,255,255,0.25)}
 .page-subtitle{color:rgba(255,255,255,0.97);font-size:17px;font-weight:800;margin-top:14px;letter-spacing:0.5px}
 .page-subdesc{color:rgba(255,255,255,0.7);font-size:12px;margin-top:5px;letter-spacing:0.2px}
+/* ===== 三菜一汤推荐（温州特色）· 首页入口卡片 ===== */
+.recipe-entry{margin:0 0 22px;background:linear-gradient(135deg,#FFF3EB 0%,#FFE4D1 100%);border-radius:18px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;border:1px solid rgba(232,121,58,0.18);box-shadow:0 4px 16px rgba(232,121,58,0.10);transition:transform 0.18s,box-shadow 0.18s;position:relative;overflow:hidden}
+.recipe-entry:active{transform:scale(0.985);box-shadow:0 2px 8px rgba(232,121,58,0.12)}
+.recipe-entry::after{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(255,255,255,0.5) 0%,transparent 70%);pointer-events:none}
+.recipe-entry .re-icon{width:52px;height:52px;border-radius:15px;background:var(--orange-gradient);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 6px 16px rgba(232,121,58,0.35);position:relative;z-index:1}
+.recipe-entry .re-text{flex:1;min-width:0;position:relative;z-index:1}
+.recipe-entry .re-title{font-size:16px;font-weight:900;color:var(--text);letter-spacing:0.4px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.recipe-entry .re-title .re-tag{font-size:10px;padding:2px 8px;border-radius:8px;background:var(--orange);color:#fff;font-weight:700;letter-spacing:0.2px}
+.recipe-entry .re-desc{font-size:12px;color:var(--text-secondary);margin-top:4px;line-height:1.5}
+.recipe-entry .re-arrow{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;color:var(--orange);font-size:13px;flex-shrink:0;position:relative;z-index:1}
+
+/* ===== 推荐菜品弹层 ===== */
+.recipe-modal-content{background:#fff;width:100%;max-width:480px;max-height:88vh;border-radius:28px 28px 0 0;overflow-y:auto;animation:slideUp 0.4s cubic-bezier(0.16,1,0.3,1);box-shadow:0 -8px 40px rgba(0,0,0,0.2)}
+.recipe-modal-head{position:sticky;top:0;z-index:10;background:linear-gradient(135deg,#FFF3EB 0%,#FFE4D1 100%);padding:18px 22px 14px;border-bottom:1px solid rgba(232,121,58,0.12)}
+.recipe-modal-head .rmh-handle{width:40px;height:5px;background:rgba(232,121,58,0.3);border-radius:3px;margin:0 auto 10px}
+.recipe-modal-head .rmh-title{font-size:18px;font-weight:900;color:var(--text);letter-spacing:0.4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.recipe-modal-head .rmh-title .rmh-tag{font-size:11px;padding:3px 9px;border-radius:9px;background:var(--orange);color:#fff;font-weight:700;letter-spacing:0.2px}
+.recipe-modal-head .rmh-sub{font-size:12px;color:var(--text-secondary);margin-top:5px;line-height:1.5}
+.recipe-modal-body{padding:16px 18px 36px}
+.rm-recipe-card{background:var(--card);border-radius:var(--radius-lg);padding:15px;box-shadow:var(--shadow);border:1.5px solid transparent;margin-bottom:12px;position:relative;overflow:hidden;animation:fadeIn 0.4s ease both}
+.rm-recipe-card:last-child{margin-bottom:0}
+.rm-recipe-card.is-soup{border-color:rgba(8,145,178,0.18);background:linear-gradient(180deg,#FFFFFF 0%,#F0FBFD 100%)}
+.rm-recipe-card.is-soup::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;background:linear-gradient(135deg,transparent 50%,rgba(8,145,178,0.06) 50%)}
+.rm-recipe-head{display:flex;align-items:center;gap:11px;margin-bottom:9px;position:relative;z-index:1}
+.rm-recipe-head .rmh-icon{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.rm-recipe-head .rmh-info{flex:1;min-width:0}
+.rm-recipe-head .rmh-name{font-size:15px;font-weight:800;color:var(--text);letter-spacing:0.3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.rm-recipe-head .rmh-name .rn-badge{font-size:9px;padding:2px 6px;border-radius:6px;font-weight:700;letter-spacing:0.2px}
+.rm-recipe-head .rmh-name .rn-badge.wz{background:var(--orange-light);color:var(--orange)}
+.rm-recipe-head .rmh-name .rn-badge.soup{background:#CFFAFE;color:#0891B2}
+.rm-recipe-head .rmh-desc{font-size:11px;color:var(--text-secondary);margin-top:3px;line-height:1.5}
+.rm-recipe-ingredients{display:flex;flex-wrap:wrap;gap:7px;padding-top:11px;border-top:1px dashed var(--border);position:relative;z-index:1}
+.rm-recipe-ingredients .ri-label{flex-shrink:0;font-size:11px;color:var(--green);font-weight:700;display:flex;align-items:center;gap:4px;padding-top:5px;letter-spacing:0.2px}
+.rm-recipe-ingredients .ri-label i{font-size:10px}
+.ing-chip{display:inline-flex;align-items:center;gap:5px;background:var(--green-light);border:1px solid rgba(45,139,78,0.14);border-radius:11px;padding:6px 11px;font-size:12px;color:var(--text);font-weight:600;cursor:pointer;transition:all 0.2s cubic-bezier(0.4,0,0.2,1);letter-spacing:0.2px;font-family:inherit;line-height:1}
+.ing-chip:active{transform:scale(0.93);background:var(--green);color:#fff;border-color:transparent}
+.ing-chip i{font-size:10px;color:var(--green);transition:color 0.2s}
+.ing-chip:active i{color:#fff}
+.ing-chip .ic-arrow{font-size:9px;opacity:0.5;margin-left:1px}
+.rm-recipe-foot-hint{font-size:10px;color:var(--text-muted);margin-top:10px;display:flex;align-items:center;gap:5px;letter-spacing:0.2px;position:relative;z-index:1}
+.rm-recipe-foot-hint i{font-size:10px;color:var(--green)}
+.rm-modal-close{position:absolute;top:14px;right:16px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.8);border:none;color:var(--text-secondary);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:11;transition:all 0.2s}
+.rm-modal-close:active{transform:scale(0.9);background:var(--orange-light);color:var(--orange)}
 </style>
 </head>
 <body>
@@ -253,6 +296,17 @@ body{
 
 <div class="modal-overlay" id="modal" onclick="if(event.target===this)this.classList.remove('active')">
   <div class="modal-content" id="modalContent"></div>
+</div>
+<div class="modal-overlay" id="recipeModal" onclick="if(event.target===this)closeRecipes()">
+  <div class="recipe-modal-content">
+    <div class="recipe-modal-head">
+      <div class="rmh-handle"></div>
+      <button class="rm-modal-close" onclick="closeRecipes()"><i class="fas fa-times"></i></button>
+      <div class="rmh-title">三菜一汤推荐 <span class="rmh-tag">温州特色</span></div>
+      <div class="rmh-sub">本地瓯菜家常搭配，点击食材即可跳转对应店铺</div>
+    </div>
+    <div class="recipe-modal-body" id="recipeModalBody"></div>
+  </div>
 </div>
 
 <!-- ===== HOME PAGE ===== -->
@@ -295,6 +349,14 @@ body{
         <div class="qa-icon" style="background:linear-gradient(135deg,#FEE2E2,#FECACA);color:#DC2626;"><i class="fas fa-clipboard-check"></i></div>
         <div class="qa-label">售后中心</div>
       </button>
+    </div>
+    <div class="recipe-entry fade-in" onclick="openRecipes()">
+      <div class="re-icon">🍲</div>
+      <div class="re-text">
+        <div class="re-title">三菜一汤推荐 <span class="re-tag">温州特色</span></div>
+        <div class="re-desc">本地瓯菜家常搭配，点击查看推荐菜品与食材清单</div>
+      </div>
+      <div class="re-arrow"><i class="fas fa-chevron-right"></i></div>
     </div>
     <div class="section-title">
       <h2>按区域逛</h2>
@@ -585,7 +647,9 @@ const SHOPS = [
       {item:'西红柿',unit:'元/斤'},
       {item:'土豆',unit:'元/斤'},
       {item:'黄瓜',unit:'元/斤'},
-      {item:'茼蒿',unit:'元/斤',season:true}
+      {item:'茼蒿',unit:'元/斤',season:true},
+      {item:'小葱',unit:'元/把'},
+      {item:'生姜',unit:'元/斤'}
     ]
   },
   { id:2, zone:'veg', name:'绿野菜铺', stall:'A-07', featured:false, isNew:true,
@@ -629,7 +693,8 @@ const SHOPS = [
       {item:'五花肉',unit:'元/斤'},
       {item:'里脊肉',unit:'元/斤'},
       {item:'牛腱子',unit:'元/斤'},
-      {item:'排骨',unit:'元/斤'}
+      {item:'排骨',unit:'元/斤'},
+      {item:'金华火腿',unit:'元/斤'}
     ]
   },
   { id:7, zone:'meat', name:'禽旺家禽', stall:'C-04', featured:false, isNew:false,
@@ -646,7 +711,10 @@ const SHOPS = [
       {item:'基围虾',unit:'元/斤'},
       {item:'大闸蟹',unit:'元/斤',season:true},
       {item:'花甲',unit:'元/斤'},
-      {item:'鲈鱼',unit:'元/斤'}
+      {item:'鲈鱼',unit:'元/斤'},
+      {item:'鮸鱼',unit:'元/斤'},
+      {item:'海瓜子',unit:'元/斤'},
+      {item:'黄鱼',unit:'元/斤'}
     ]
   },
   { id:9, zone:'seafood', name:'渔人码头', stall:'D-05', featured:false, isNew:true,
@@ -663,7 +731,9 @@ const SHOPS = [
       {item:'八角',unit:'元/斤'},
       {item:'黑木耳',unit:'元/斤'},
       {item:'黄花菜',unit:'元/斤'},
-      {item:'绿豆',unit:'元/斤'}
+      {item:'绿豆',unit:'元/斤'},
+      {item:'笋干',unit:'元/斤'},
+      {item:'淀粉',unit:'元/斤'}
     ]
   },
   { id:11, zone:'dry', name:'福源坚果', stall:'E-04', featured:false, isNew:false,
@@ -715,6 +785,126 @@ let mapIsDragging = false, mapStartX = 0, mapStartY = 0, mapLastDist = 0;
 let mapIsPinching = false;       // 双指缩放中
 let mapDragMode = false;         // 单指拖拽模式开关
 let mapLastTap = 0;
+
+/* ╔═══════════════════════════════════════════════════════════╗
+   ║  ❹½ 三菜一汤推荐（温州特色）· 配置区                          ║
+   ║  ─────────────────────────────────────────────────────────  ║
+   ║  【纯前端维护说明】                                          ║
+   ║  · 平时只需修改下面 RECIPES 数组即可，其余代码无需改动。      ║
+   ║  · 新增菜品：复制一个 { ... } 对象粘贴到数组里即可。         ║
+   ║  · 删除菜品：删掉对应 { ... } 对象（注意逗号）。             ║
+   ║  · 调整顺序：直接调整对象在数组中的位置。                    ║
+   ║                                                              ║
+   ║  字段说明：                                                   ║
+   ║    type        'dish' 普通菜 / 'soup' 汤（汤卡片用蓝色调）   ║
+   ║    icon        菜品 emoji                                    ║
+   ║    iconBg      图标背景渐变                                  ║
+   ║    iconColor   图标颜色                                      ║
+   ║    name        菜名                                          ║
+   ║    badge       角标文字（如「温州特色」「名汤」）            ║
+   ║    desc        一句话菜品介绍                                ║
+   ║    ingredients 食材数组                                      ║
+   ║      └ name  食材名（必须与 SHOPS 中 prices[].item 对应，    ║
+   ║              这样点击食材才能搜到对应店铺）                  ║
+   ║      └ icon  食材图标（Font Awesome 类名，如 fa-fish）       ║
+   ╚═══════════════════════════════════════════════════════════╝ */
+const RECIPES = [
+  {
+    type:'dish', icon:'🐟', iconBg:'linear-gradient(135deg,#CFFAFE,#A5F3FC)', iconColor:'#0891B2',
+    name:'三丝敲鱼', badge:'温州特色',
+    desc:'瓯菜经典，鱼肉敲薄切丝，配火腿香菇笋丝同煮，汤清味鲜',
+    ingredients:[
+      {name:'鮸鱼', icon:'fa-fish'},
+      {name:'香菇', icon:'fa-leaf'},
+      {name:'金华火腿', icon:'fa-drumstick-bite'},
+      {name:'笋干', icon:'fa-seedling'},
+      {name:'淀粉', icon:'fa-circle'}
+    ]
+  },
+  {
+    type:'dish', icon:'🦪', iconBg:'linear-gradient(135deg,#FFF3EB,#FFE0CC)', iconColor:'#E8793A',
+    name:'葱油海瓜子', badge:'温州特色',
+    desc:'温州家常海鲜，海瓜子焯水后淋葱油激香，咸鲜下饭',
+    ingredients:[
+      {name:'海瓜子', icon:'fa-fish'},
+      {name:'小葱', icon:'fa-leaf'},
+      {name:'生姜', icon:'fa-carrot'}
+    ]
+  },
+  {
+    type:'dish', icon:'🐠', iconBg:'linear-gradient(135deg,#FEF3C7,#FDE68A)', iconColor:'#B45309',
+    name:'酒香黄鱼', badge:'温州特色',
+    desc:'瓯菜代表，黄鱼煎至金黄后加酒焖煮，肉质蒜瓣状，酒香浓郁',
+    ingredients:[
+      {name:'黄鱼', icon:'fa-fish'},
+      {name:'生姜', icon:'fa-carrot'},
+      {name:'小葱', icon:'fa-leaf'}
+    ]
+  },
+  {
+    type:'soup', icon:'🥣', iconBg:'linear-gradient(135deg,#DBEAFE,#BFDBFE)', iconColor:'#2563EB',
+    name:'温州鱼丸汤', badge:'名汤',
+    desc:'温州名汤，鱼肉手打成团，汤色清透，加醋与胡椒粉提鲜',
+    ingredients:[
+      {name:'鮸鱼', icon:'fa-fish'},
+      {name:'淀粉', icon:'fa-circle'},
+      {name:'小葱', icon:'fa-leaf'},
+      {name:'生姜', icon:'fa-carrot'}
+    ]
+  }
+];
+
+/* 打开推荐菜品弹层 */
+function openRecipes(){
+  const body = document.getElementById('recipeModalBody');
+  if(!body) return;
+  body.innerHTML = RECIPES.map((r,i) => {
+    const isSoup = r.type === 'soup';
+    const ings = r.ingredients.map(ig =>
+      '<button class="ing-chip" onclick="searchIngredient(\'' + ig.name.replace(/'/g,"\\'") + '\')">' +
+        '<i class="fas ' + ig.icon + '"></i>' + ig.name +
+        '<i class="fas fa-search ic-arrow"></i>' +
+      '</button>'
+    ).join('');
+    return '' +
+      '<div class="rm-recipe-card ' + (isSoup ? 'is-soup' : '') + '" style="animation-delay:' + (i*0.07) + 's">' +
+        '<div class="rm-recipe-head">' +
+          '<div class="rmh-icon" style="background:' + r.iconBg + ';color:' + r.iconColor + ';">' + r.icon + '</div>' +
+          '<div class="rmh-info">' +
+            '<div class="rmh-name">' + r.name +
+              '<span class="rn-badge ' + (isSoup ? 'soup' : 'wz') + '">' + r.badge + '</span>' +
+            '</div>' +
+            '<div class="rmh-desc">' + r.desc + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="rm-recipe-ingredients">' +
+          '<span class="ri-label"><i class="fas fa-shopping-basket"></i>食材</span>' +
+          ings +
+        '</div>' +
+        '<div class="rm-recipe-foot-hint"><i class="fas fa-hand-pointer"></i>点击任意食材，自动搜索对应店铺</div>' +
+      '</div>';
+  }).join('');
+  document.getElementById('recipeModal').classList.add('active');
+}
+
+/* 关闭推荐菜品弹层 */
+function closeRecipes(){
+  document.getElementById('recipeModal').classList.remove('active');
+}
+
+/* 点击食材 → 关闭弹层 + 跳转搜索对应店铺 */
+function searchIngredient(name){
+  closeRecipes();
+  // 同步填入首页搜索框，触发既有搜索逻辑
+  const input = document.getElementById('searchInput');
+  if(input){
+    input.value = name;
+    document.getElementById('clearBtn').classList.add('show');
+  }
+  handleSearch(name);
+  // 滚动到顶部，方便用户看搜索结果面板
+  window.scrollTo({top:0, behavior:'smooth'});
+}
 
 function getZoneCount(zid){ return SHOPS.filter(s => s.zone === zid).length; }
 
