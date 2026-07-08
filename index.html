@@ -209,6 +209,82 @@ body{
 .map-zoom-controls{position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:4px;z-index:5;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);padding:5px;border-radius:14px;box-shadow:0 4px 16px rgba(0,0,0,0.12);border:1px solid rgba(255,255,255,0.5)}
 .map-zoom-btn{width:34px;height:34px;border-radius:10px;border:none;background:transparent;color:var(--green);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
 .map-zoom-btn:active{transform:scale(0.88);background:var(--green-light)}
+
+/* ===== 横屏全屏地图（老年人友好） ===== */
+.landscape-btn{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;border:1.5px solid var(--green);background:var(--green-gradient);color:#fff;font-size:12px;font-weight:800;font-family:inherit;cursor:pointer;transition:all 0.2s;letter-spacing:0.3px;box-shadow:0 3px 10px rgba(45,139,78,0.25)}
+.landscape-btn i{font-size:12px}
+.landscape-btn:active{transform:scale(0.95)}
+
+/* 全屏遮罩层：固定铺满整个视口，黑色背景 */
+.landscape-overlay{position:fixed;inset:0;z-index:9999;background:#000;display:none;align-items:center;justify-content:center;overflow:hidden}
+.landscape-overlay.active{display:flex}
+/* 旋转容器：把内容顺时针转 90°，宽高互换，铺满屏幕 */
+.landscape-stage{
+  position:relative;
+  width:100vh;            /* 视口高度作为宽度 */
+  height:100vw;           /* 视口宽度作为高度 */
+  transform:rotate(90deg);
+  transform-origin:center center;
+  display:flex;align-items:center;justify-content:center;
+  background:#1a1a1a;
+}
+/* 横屏下的地图图片：宽度撑满，可缩放可拖动 */
+.landscape-stage .ls-map-img{
+  max-width:100%;max-height:100%;
+  width:auto;height:auto;
+  object-fit:contain;
+  -webkit-user-drag:none;user-select:none;
+  transform-origin:center center;
+  will-change:transform;
+  touch-action:none;       /* 横屏下直接接管所有手势 */
+}
+/* 横屏下的楼层切换（左上角，大按钮） */
+.landscape-floor-switch{
+  position:absolute;top:18px;left:18px;
+  display:flex;gap:10px;z-index:10;
+}
+.landscape-floor-btn{
+  padding:14px 28px;border-radius:14px;border:none;
+  background:rgba(255,255,255,0.15);color:#fff;
+  font-size:18px;font-weight:800;font-family:inherit;cursor:pointer;
+  backdrop-filter:blur(10px);
+  transition:all 0.2s;letter-spacing:1px;
+}
+.landscape-floor-btn.active{background:var(--green-gradient);box-shadow:0 4px 16px rgba(45,139,78,0.5)}
+.landscape-floor-btn:active{transform:scale(0.95)}
+/* 横屏下的关闭按钮（右上角，大号易点） */
+.landscape-close{
+  position:absolute;top:18px;right:18px;z-index:10;
+  width:56px;height:56px;border-radius:50%;border:none;
+  background:rgba(255,255,255,0.2);color:#fff;
+  font-size:24px;cursor:pointer;backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;
+}
+.landscape-close:active{transform:scale(0.9);background:rgba(255,255,255,0.35)}
+/* 横屏下的缩放按钮组（右下角，大号） */
+.landscape-zoom{
+  position:absolute;bottom:24px;right:24px;z-index:10;
+  display:flex;flex-direction:column;gap:8px;
+}
+.landscape-zoom-btn{
+  width:60px;height:60px;border-radius:16px;border:none;
+  background:rgba(255,255,255,0.92);color:var(--green);
+  font-size:24px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(0,0,0,0.3);
+  transition:all 0.2s;
+}
+.landscape-zoom-btn:active{transform:scale(0.9)}
+/* 横屏下的提示（底部居中） */
+.landscape-tip{
+  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:10;
+  background:rgba(0,0,0,0.55);color:#fff;
+  padding:10px 22px;border-radius:24px;
+  font-size:14px;font-weight:600;letter-spacing:0.5px;
+  backdrop-filter:blur(8px);white-space:nowrap;
+  pointer-events:none;
+}
 .price-zone-card{background:var(--card);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px;border-left:4px solid transparent}
 .price-zone-header{padding:15px 16px 9px;display:flex;align-items:center;gap:9px}
 .price-zone-header .pz-icon{font-size:21px}
@@ -403,7 +479,10 @@ body{
         <button class="map-tool-btn" id="dragToggle" onclick="toggleDragMode()">
           <i class="fas fa-hand-pointer"></i> <span id="dragModeText">启用拖动</span>
         </button>
-        <span class="map-tool-hint">默认可上下滑动浏览页面；点击按钮后可拖动地图，双指随时缩放</span>
+        <button class="landscape-btn" onclick="enterLandscapeMap()">
+          <i class="fas fa-expand"></i> 横屏全屏
+        </button>
+        <span class="map-tool-hint">看不清？点「横屏全屏」把手机横过来看大图</span>
       </div>
 
       <div class="map-img-wrapper" id="mapImgWrapper">
@@ -573,6 +652,28 @@ body{
   <button class="nav-item" data-page="pagePrice" onclick="navTo(this)"><i class="fas fa-store"></i><span>店铺</span></button>
   <button class="nav-item" data-page="pageConsult" onclick="navTo(this)"><i class="fas fa-headset"></i><span>服务</span></button>
   <button class="nav-item" data-page="pageAfterSale" onclick="navTo(this)"><i class="fas fa-clipboard-check"></i><span>售后</span></button>
+</div>
+
+<!-- ===== 横屏全屏地图遮罩层 ===== -->
+<div class="landscape-overlay" id="landscapeOverlay">
+  <div class="landscape-stage" id="landscapeStage">
+    <!-- 楼层切换 -->
+    <div class="landscape-floor-switch" id="landscapeFloorSwitch"></div>
+    <!-- 关闭按钮 -->
+    <button class="landscape-close" onclick="exitLandscapeMap()" title="退出">
+      <i class="fas fa-times"></i>
+    </button>
+    <!-- 地图图片 -->
+    <img class="ls-map-img" id="lsMapImg" src="" alt="市场地图">
+    <!-- 缩放按钮 -->
+    <div class="landscape-zoom">
+      <button class="landscape-zoom-btn" onclick="lsZoomIn()" title="放大"><i class="fas fa-plus"></i></button>
+      <button class="landscape-zoom-btn" onclick="lsZoomOut()" title="缩小"><i class="fas fa-minus"></i></button>
+      <button class="landscape-zoom-btn" onclick="lsZoomReset()" title="复位"><i class="fas fa-undo"></i></button>
+    </div>
+    <!-- 操作提示 -->
+    <div class="landscape-tip">单指拖动 · 双指缩放 · 点右上角退出</div>
+  </div>
 </div>
 
 <script>
@@ -1230,6 +1331,159 @@ function mapZoomReset(){
   mapScale = 1; mapTransX = 0; mapTransY = 0;
   setDragMode(false);
   applyMapTransform();
+}
+
+/* ════════════════════════════════════════════════════════════
+ *  横屏全屏地图（独立的状态变量，与竖屏互不干扰）
+ * ════════════════════════════════════════════════════════════ */
+let lsActive = false;            // 是否处于横屏全屏模式
+let lsFloor = 1;                 // 横屏下当前楼层
+let lsScale = 1, lsTransX = 0, lsTransY = 0;
+let lsIsDragging = false, lsIsPinching = false;
+let lsStartX = 0, lsStartY = 0, lsLastDist = 0, lsLastScale = 1;
+let lsInited = false;
+
+function enterLandscapeMap(){
+  // 进入时同步当前楼层
+  lsFloor = mapFloor;
+  lsScale = 1; lsTransX = 0; lsTransY = 0;
+  const overlay = document.getElementById('landscapeOverlay');
+  overlay.classList.add('active');
+  lsActive = true;
+  document.body.style.overflow = 'hidden';   // 锁住背景滚动
+  // 压入历史记录，让安卓返回键能退出横屏而不是直接退出页面
+  history.pushState({ landscapeMap: true }, '');
+  renderLandscapeFloors();
+  loadLandscapeMap();
+  if(!lsInited){ initLandscapeInteraction(); lsInited = true; }
+}
+
+function exitLandscapeMap(){
+  if(!lsActive) return;
+  const overlay = document.getElementById('landscapeOverlay');
+  overlay.classList.remove('active');
+  lsActive = false;
+  document.body.style.overflow = '';
+}
+
+function renderLandscapeFloors(){
+  const box = document.getElementById('landscapeFloorSwitch');
+  box.innerHTML = FLOORS.map(f =>
+    '<button class="landscape-floor-btn ' + (lsFloor===f.id?'active':'') + '" onclick="lsSwitchFloor(' + f.id + ')">' + f.label + '</button>'
+  ).join('');
+}
+
+function lsSwitchFloor(f){
+  lsFloor = f;
+  lsScale = 1; lsTransX = 0; lsTransY = 0;
+  renderLandscapeFloors();
+  loadLandscapeMap();
+}
+
+function loadLandscapeMap(){
+  const url = MAP_IMAGES[lsFloor] || '';
+  const img = document.getElementById('lsMapImg');
+  if(url){
+    img.src = url;
+    img.style.display = 'block';
+  }else{
+    img.src = '';
+    img.style.display = 'none';
+  }
+  applyLsTransform();
+}
+
+function applyLsTransform(){
+  const img = document.getElementById('lsMapImg');
+  if(img){
+    img.style.transform = 'translate(' + lsTransX + 'px,' + lsTransY + 'px) scale(' + lsScale + ')';
+  }
+}
+
+function lsZoomIn(){ lsScale = Math.min(6, lsScale + 0.5); applyLsTransform(); }
+function lsZoomOut(){
+  lsScale = Math.max(1, lsScale - 0.5);
+  if(lsScale <= 1.001){ lsTransX = 0; lsTransY = 0; }
+  applyLsTransform();
+}
+function lsZoomReset(){ lsScale = 1; lsTransX = 0; lsTransY = 0; applyLsTransform(); }
+
+function initLandscapeInteraction(){
+  const stage = document.getElementById('landscapeStage');
+
+  stage.addEventListener('touchstart', e => {
+    // 点击按钮时不接管
+    if(e.target.closest('.landscape-close, .landscape-zoom-btn, .landscape-floor-btn')) return;
+    if(e.touches.length === 2){
+      lsIsPinching = true; lsIsDragging = false;
+      lsLastDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      lsLastScale = lsScale;
+    }else if(e.touches.length === 1){
+      lsIsDragging = true;
+      lsStartX = e.touches[0].clientX - lsTransX;
+      lsStartY = e.touches[0].clientY - lsTransY;
+    }
+  }, { passive:true });
+
+  stage.addEventListener('touchmove', e => {
+    if(lsIsPinching && e.touches.length === 2){
+      e.preventDefault();
+      const d = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      if(lsLastDist > 0){
+        lsScale = Math.min(6, Math.max(1, lsLastScale * (d / lsLastDist)));
+        applyLsTransform();
+      }
+    }else if(lsIsDragging && e.touches.length === 1){
+      e.preventDefault();
+      lsTransX = e.touches[0].clientX - lsStartX;
+      lsTransY = e.touches[0].clientY - lsStartY;
+      applyLsTransform();
+    }
+  }, { passive:false });
+
+  stage.addEventListener('touchend', e => {
+    if(lsIsPinching && e.touches.length < 2){ lsIsPinching = false; }
+    if(lsIsDragging){ lsIsDragging = false; }
+  });
+
+  // 桌面端鼠标支持
+  let mouseDown = false;
+  stage.addEventListener('mousedown', e => {
+    if(e.target.closest('.landscape-close, .landscape-zoom-btn, .landscape-floor-btn')) return;
+    mouseDown = true; lsIsDragging = true;
+    lsStartX = e.clientX - lsTransX;
+    lsStartY = e.clientY - lsTransY;
+  });
+  stage.addEventListener('mousemove', e => {
+    if(mouseDown && lsIsDragging){
+      lsTransX = e.clientX - lsStartX;
+      lsTransY = e.clientY - lsStartY;
+      applyLsTransform();
+    }
+  });
+  stage.addEventListener('mouseup',    () => { mouseDown = false; lsIsDragging = false; });
+  stage.addEventListener('mouseleave', () => { mouseDown = false; lsIsDragging = false; });
+  stage.addEventListener('wheel', e => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.3 : 0.3;
+    lsScale = Math.min(6, Math.max(1, lsScale + delta));
+    if(lsScale <= 1.001){ lsTransX = 0; lsTransY = 0; }
+    applyLsTransform();
+  }, { passive:false });
+
+  // 安卓返回键退出
+  window.addEventListener('popstate', () => {
+    if(lsActive){
+      exitLandscapeMap();
+      // 不再额外 push，避免循环
+    }
+  });
 }
 
 function init(){
