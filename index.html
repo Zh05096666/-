@@ -78,35 +78,41 @@ body{
 .quick-action .qa-icon{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:19px}
 .quick-action .qa-label{font-size:12px;font-weight:600;color:var(--text);letter-spacing:0.3px}
 .section-title{display:flex;align-items:center;justify-content:space-between;margin:26px 0 16px}
-.section-title h2{font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px;letter-spacing:0.5px}
+.section-title h2{font-size:19px;font-weight:800;display:flex;align-items:center;gap:8px;letter-spacing:0.5px}
 .section-title h2::before{content:'';width:5px;height:20px;background:var(--green-gradient);border-radius:3px}
-.section-title a{font-size:12px;color:var(--green);text-decoration:none;display:flex;align-items:center;gap:3px;cursor:pointer;font-weight:600}
+.section-title a{font-size:14px;color:var(--green);text-decoration:none;display:flex;align-items:center;gap:3px;cursor:pointer;font-weight:600}
 .zone-tabs,.price-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:18px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .zone-tabs::-webkit-scrollbar,.price-tabs::-webkit-scrollbar{display:none}
-.zone-tab,.price-tab{flex-shrink:0;padding:9px 20px;border-radius:22px;font-size:13px;font-weight:600;border:1.5px solid var(--border);background:var(--card);color:var(--text-secondary);cursor:pointer;font-family:inherit;transition:all 0.25s cubic-bezier(0.4,0,0.2,1);white-space:nowrap}
+.zone-tab,.price-tab{flex-shrink:0;padding:10px 22px;border-radius:22px;font-size:15px;font-weight:600;border:1.5px solid var(--border);background:var(--card);color:var(--text-secondary);cursor:pointer;font-family:inherit;transition:all 0.25s cubic-bezier(0.4,0,0.2,1);white-space:nowrap}
 .zone-tab:active,.price-tab:active{transform:scale(0.95)}
 .zone-tab.active,.price-tab.active{background:var(--green-gradient);color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(45,139,78,0.35);transform:scale(1.03)}
 .shop-list{display:flex;flex-direction:column;gap:14px}
-.shop-card{background:var(--card);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow);cursor:pointer;transition:transform 0.18s,box-shadow 0.18s;border:1.5px solid transparent;position:relative;overflow:hidden}
+.shop-list .shop-card.collapsed{display:none}
+.shop-expand-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:16px;padding:15px 20px;border-radius:var(--radius-lg);border:1.5px dashed var(--green);background:var(--green-light);color:var(--green-dark);font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:all 0.25s cubic-bezier(0.4,0,0.2,1);letter-spacing:0.5px}
+.shop-expand-btn:active{transform:scale(0.98);background:#D7EFE0}
+.shop-expand-btn i{font-size:14px;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1)}
+.shop-expand-btn.expanded i{transform:rotate(180deg)}
+.shop-expand-btn .se-count{font-size:14px;color:var(--green);font-weight:600;background:rgba(255,255,255,0.7);padding:2px 10px;border-radius:10px}
+.shop-card{background:var(--card);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow);cursor:pointer;transition:transform 0.18s,box-shadow 0.18s;border:1.5px solid transparent;position:relative;overflow:hidden}
 .shop-card:active{transform:scale(0.98);box-shadow:var(--shadow-md)}
 .shop-card.featured{border-color:rgba(232,121,58,0.25);box-shadow:0 4px 20px rgba(232,121,58,0.1)}
 .shop-card.featured::before{content:'';position:absolute;top:0;right:0;width:70px;height:70px;background:linear-gradient(135deg,transparent 50%,rgba(232,121,58,0.08) 50%)}
 .shop-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:11px}
 .shop-card-left{flex:1}
-.shop-name{font-size:16px;font-weight:800;margin-bottom:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;letter-spacing:0.3px}
-.shop-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;letter-spacing:0.3px}
+.shop-name{font-size:19px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;letter-spacing:0.3px}
+.shop-badge{font-size:12px;padding:3px 9px;border-radius:10px;font-weight:700;letter-spacing:0.3px}
 .badge-feature{background:var(--orange-light);color:var(--orange)}
 .badge-new{background:var(--green-light);color:var(--green-dark)}
-.shop-stall{font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:5px;font-weight:500}
-.shop-stall i{color:var(--green);font-size:11px}
-.shop-card-right{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700;color:var(--text-muted)}
-.shop-card-right i{font-size:12px}
+.shop-stall{font-size:14px;color:var(--text-secondary);display:flex;align-items:center;gap:5px;font-weight:500}
+.shop-stall i{color:var(--green);font-size:13px}
+.shop-card-right{display:flex;align-items:center;gap:4px;font-size:15px;font-weight:700;color:var(--text-muted)}
+.shop-card-right i{font-size:14px}
 .shop-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-.shop-tag{font-size:11px;padding:4px 11px;border-radius:8px;background:var(--bg-soft);color:var(--text-secondary);font-weight:500;letter-spacing:0.2px}
-.shop-items{display:flex;align-items:flex-start;gap:10px;padding-top:13px;border-top:1px dashed var(--border);font-size:14px;line-height:1.8}
-.shop-items .si-label{flex-shrink:0;color:var(--green);font-weight:700;font-size:12px;white-space:nowrap;padding-top:4px;display:flex;align-items:center;gap:4px}
+.shop-tag{font-size:13px;padding:5px 12px;border-radius:8px;background:var(--bg-soft);color:var(--text-secondary);font-weight:500;letter-spacing:0.2px}
+.shop-items{display:flex;align-items:flex-start;gap:10px;padding-top:13px;border-top:1px dashed var(--border);font-size:16px;line-height:1.9}
+.shop-items .si-label{flex-shrink:0;color:var(--green);font-weight:700;font-size:14px;white-space:nowrap;padding-top:4px;display:flex;align-items:center;gap:4px}
 .shop-items .si-list{color:var(--text-secondary);flex:1;font-weight:500}
-.season-tag{display:inline-block;padding:1px 6px;border-radius:4px;background:linear-gradient(135deg,#FEF3C7,#FDE68A);color:#B45309;font-size:10px;margin-left:3px;vertical-align:1px;font-weight:600}
+.season-tag{display:inline-block;padding:1px 6px;border-radius:4px;background:linear-gradient(135deg,#FEF3C7,#FDE68A);color:#B45309;font-size:12px;margin-left:3px;vertical-align:1px;font-weight:600}
 .tips-card{background:var(--green-gradient);border-radius:var(--radius-lg);padding:24px;margin-top:26px;position:relative;overflow:hidden;box-shadow:var(--shadow-green)}
 .tips-card::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:rgba(255,255,255,0.08);border-radius:50%}
 .tips-card::after{content:'';position:absolute;bottom:-40px;left:20px;width:60px;height:60px;background:rgba(255,255,255,0.05);border-radius:50%}
@@ -325,6 +331,13 @@ body{
 .rm-recipe-foot-hint i{font-size:10px;color:var(--green)}
 .rm-modal-close{position:absolute;top:14px;right:16px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.8);border:none;color:var(--text-secondary);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:11;transition:all 0.2s}
 .rm-modal-close:active{transform:scale(0.9);background:var(--orange-light);color:var(--orange)}
+
+/* 不蒜子访问统计 —— 服务页底部角落不起眼的小灰字 */
+.bsz-stats{text-align:right;padding:16px 16px 6px;font-size:10px;line-height:1.6;color:var(--text-muted);opacity:0.5;letter-spacing:0.3px;user-select:none;font-variant-numeric:tabular-nums;pointer-events:none;}
+.bsz-stats #busuanzi_container_site_pv,
+.bsz-stats #busuanzi_container_site_uv{display:none}
+.bsz-stats.show #busuanzi_container_site_pv,
+.bsz-stats.show #busuanzi_container_site_uv{display:inline !important}
 </style>
 </head>
 <body>
@@ -528,8 +541,8 @@ body{
         <i class="fas fa-chevron-right consult-arrow"></i>
       </div>
       <div class="consult-item">
-        <div class="consult-icon" style="background:var(--blue-light);color:var(--blue);"><i class="fas fa-phone-alt"></i></div>
-        <div class="consult-info"><div class="ci-label">咨询电话</div><div class="ci-desc" id="consultPhone">0571-8888-6666</div></div>
+        <div class="consult-icon" style="background:var(--blue-light);color:var(--blue);"><i class="fas fa-id-badge"></i></div>
+        <div class="consult-info"><div class="ci-label">咨询带工作牌工作人员</div><div class="ci-desc">市场内请认准佩戴工作牌的工作人员</div></div>
         <i class="fas fa-chevron-right consult-arrow"></i>
       </div>
     </div>
@@ -556,6 +569,7 @@ body{
         <i class="fas fa-chevron-right consult-arrow"></i>
       </div>
     </div>
+      <div class="bsz-stats" id="bszStats"><span id="busuanzi_container_site_pv">访问 <span id="busuanzi_value_site_pv"></span> 次</span><span id="busuanzi_container_site_uv"> · 访客 <span id="busuanzi_value_site_uv"></span> 人</span></div>
   </div>
 </div>
 
@@ -594,7 +608,7 @@ body{
       </div>
     </div>
     <div class="consult-card fade-in" style="animation-delay:0.16s">
-      <h3><i class="fas fa-phone-alt"></i> 也可直接联系我们</h3>
+      <h3><i class="fas fa-id-badge"></i> 也可现场咨询</h3>
       <div class="consult-item">
         <div class="consult-icon" style="background:var(--green-light);color:var(--green);"><i class="fas fa-map-marker-alt"></i></div>
         <div class="consult-info"><div class="ci-label">服务台位置</div><div class="ci-desc">市场正门入口</div></div>
@@ -606,8 +620,8 @@ body{
         <i class="fas fa-chevron-right consult-arrow"></i>
       </div>
       <div class="consult-item">
-        <div class="consult-icon" style="background:var(--blue-light);color:var(--blue);"><i class="fas fa-phone-alt"></i></div>
-        <div class="consult-info"><div class="ci-label">咨询电话</div><div class="ci-desc" id="aftersalePhone">0571-8888-6666</div></div>
+        <div class="consult-icon" style="background:var(--blue-light);color:var(--blue);"><i class="fas fa-id-badge"></i></div>
+        <div class="consult-info"><div class="ci-label">咨询带工作牌工作人员</div><div class="ci-desc">市场内请认准佩戴工作牌的工作人员</div></div>
         <i class="fas fa-chevron-right consult-arrow"></i>
       </div>
     </div>
@@ -837,6 +851,8 @@ const SHOPS = [
  * ════════════════════════════════════════════════════════════ */
 
 let currentZone = 'veg';
+let shopExpanded = false;        // 首页店铺列表是否展开（默认只显示3家）
+const SHOP_COLLAPSE_LIMIT = 3;   // 收起时默认显示的店铺数量
 let priceZone = 'all';
 let mapFloor = 1;
 let mapScale = 1, mapLastScale = 1, mapTransX = 0, mapTransY = 0;
@@ -1000,12 +1016,13 @@ function renderZoneTabs(){
     '<button class="zone-tab ' + (z.id === currentZone ? 'active' : '') + '" onclick="selectZone(\'' + z.id + '\')">' + z.icon + ' ' + z.name + '</button>'
   ).join('');
 }
-function selectZone(id){ currentZone = id; renderZoneTabs(); renderShopList(); }
+function selectZone(id){ currentZone = id; shopExpanded = false; renderZoneTabs(); renderShopList(); }
 
 function renderShopList(){
   const ss = SHOPS.filter(s => s.zone === currentZone);
-  document.getElementById('shopList').innerHTML = ss.length ? ss.map((s,i) =>
-    '<div class="shop-card ' + (s.featured ? 'featured' : '') + ' fade-in" style="animation-delay:' + (i*0.06) + 's" onclick="openShopDetail(' + s.id + ')">' +
+  const showAll = shopExpanded || ss.length <= SHOP_COLLAPSE_LIMIT;
+  const cards = ss.length ? ss.map((s,i) =>
+    '<div class="shop-card ' + (s.featured ? 'featured' : '') + (i >= SHOP_COLLAPSE_LIMIT && !showAll ? ' collapsed' : '') + ' fade-in" style="animation-delay:' + (i*0.06) + 's" onclick="openShopDetail(' + s.id + ')">' +
       '<div class="shop-card-header"><div class="shop-card-left">' +
         '<div class="shop-name">' + s.name +
           (s.featured ? '<span class="shop-badge badge-feature">特色</span>' : '') +
@@ -1017,12 +1034,36 @@ function renderShopList(){
       '<div class="shop-tags">' + s.tags.map(t => '<span class="shop-tag">' + t + '</span>').join('') + '</div>' +
       (s.prices && s.prices.length ?
         '<div class="shop-items"><span class="si-label"><i class="fas fa-leaf"></i>主营菜品</span><span class="si-list">' +
-          s.prices.slice(0,4).map(p => p.item + (p.season ? ' <span class="season-tag" style="font-size:10px;">时令</span>' : '')).join('、') +
+          s.prices.slice(0,4).map(p => p.item + (p.season ? ' <span class="season-tag">时令</span>' : '')).join('、') +
           (s.prices.length > 4 ? ' 等' : '') +
         '</span></div>' : '') +
     '</div>'
   ).join('') :
   '<div style="text-align:center;padding:40px 0;color:var(--text-muted);"><i class="fas fa-store-slash" style="font-size:36px;margin-bottom:14px;display:block;opacity:0.2;"></i><p>该区域暂无店铺</p></div>';
+
+  // 当店铺数量超过折叠阈值时，追加「展开/收起」按钮
+  let expandBtn = '';
+  if(ss.length > SHOP_COLLAPSE_LIMIT){
+    const hiddenCount = ss.length - SHOP_COLLAPSE_LIMIT;
+    expandBtn = '<button class="shop-expand-btn ' + (shopExpanded ? 'expanded' : '') + '" onclick="toggleShopExpand()">' +
+      '<i class="fas fa-chevron-down"></i>' +
+      (shopExpanded ? '收起店铺' : '展开更多店铺') +
+      '<span class="se-count">' + (shopExpanded ? '共 ' + ss.length + ' 家' : '还有 ' + hiddenCount + ' 家') + '</span>' +
+    '</button>';
+  }
+  document.getElementById('shopList').innerHTML = cards + expandBtn;
+}
+
+function toggleShopExpand(){
+  shopExpanded = !shopExpanded;
+  renderShopList();
+  // 展开后让按钮区域滚动到可视范围，方便中老年用户继续浏览
+  if(shopExpanded){
+    setTimeout(() => {
+      const btn = document.querySelector('.shop-expand-btn');
+      if(btn) btn.scrollIntoView({ behavior:'smooth', block:'center' });
+    }, 60);
+  }
 }
 
 function openShopDetail(id){
@@ -1060,6 +1101,7 @@ function renderMapGrid(){
 }
 function goToZone(id){
   currentZone = id;
+  shopExpanded = false;
   switchPage('pageHome');
   setTimeout(() => {
     renderZoneTabs(); renderShopList();
@@ -1472,8 +1514,6 @@ function initLandscapeInteraction(){
 
 function init(){
   document.getElementById('aftersaleLink').href = AFTERSALE_FORM_URL;
-  document.getElementById('consultPhone').textContent = CONTACT_PHONE;
-  document.getElementById('aftersalePhone').textContent = CONTACT_PHONE;
   updateStatusTime();
   renderZoneTabs();
   renderShopList();
@@ -1485,6 +1525,28 @@ function init(){
   renderPriceContent();
 }
 init();
+</script>
+<!-- 不蒜子访问统计 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script>
+(function(){
+  var box=document.getElementById('bszStats');
+  if(!box)return;
+  function show(){
+    if(document.getElementById('busuanzi_value_site_pv')&&
+       document.getElementById('busuanzi_value_site_pv').innerHTML){
+      box.classList.add('show');
+    }
+  }
+  // 不蒜子回调
+  if(window.busuanzi){window.busuanzi.call=show;}
+  // 兜底：定时检测
+  var t=setInterval(function(){
+    var pv=document.getElementById('busuanzi_value_site_pv');
+    if(pv&&pv.innerHTML){show();clearInterval(t);}
+  },300);
+  setTimeout(function(){clearInterval(t);},8000);
+})();
 </script>
 </body>
 </html>
